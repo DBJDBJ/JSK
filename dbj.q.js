@@ -75,13 +75,45 @@
     // for each element found call the function given
     Q.EACH = function(method, selector, container) {
         if ("function" !== typeof method) return;
-        var list = Q(selector, container), j = 0 ;
+        var list = Q(selector, container), j = 0;
         if (list)
             for (; j < list.length; j++) {
             method(list[j]); // element found is passed as first argument
         }
 
     }
+    // methods for browser where TreeWalker exists
+    if (document.createTreeWalker) {
+        // return the parent node containing the text if matched 
+        Q.MATCH = function(rx_, selector_, container_) {
+            try {
+                function find_text(rootnode, regex) {
+                    var walker = document.createTreeWalker(rootnode, NodeFilter.SHOW_TEXT, null, false)
+                    walker.firstChild() //Walk to first text child node THAT IS TEXT
+                    if (!walker.currentNode) return null;
+                    var paratext = walker.currentNode.nodeValue, parent_ = walker.currentNode.parentNode;
+                    while (walker.nextSibling()) { //Step through each sibling
+                        paratext += walker.currentNode.nodeValue;
+                    }
+                    // filter out newlines, tabs, etc ...
+                    paratext = paratext.match(/\S+/g)
+                    // there is no meaningfull text left
+                    if (!paratext) return null;
+                    paratext = paratext.join(" ");
+                    paratext = regex ? paratext.match(regex) : paratext;
+                    return paratext ? { "node": parent_, "match": paratext} : null;
+                }
+                var retval = [];
+                Q.EACH(function(E) {
+                    var rv = find_text(E, rx_);
+                    if (rv) retval.push(rv);
+                }, selector_, container_);
+                return retval;
+            } catch (x) {
+                return new Error("Q.MATCH()" + " : " + x);
+            }
+        }
+    } // eof if
 
-})(); // end of Q closure
+})();                     // end of Q closure
 //-------------------------------------------------------------------------------------

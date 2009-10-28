@@ -17,20 +17,37 @@ div textarea { width:97%; height:97%; margin:1%; }
 <body>
 <div id="left" class="okvir">
 <textarea id="test" cols="80" rows="24" >
+
 <div style="background:gold;width:10cm;height:3cm;border:1mm solid;" src="X"> 
-<ol>
-<li id="LI1" >Some text here</li>
-<li id="LI2" >Some text over there</li>
+<ol style="whatever wherever" >
+<li id="LI1" >Some text <font size="3"><u>here</u></font></li>
+<li id="LI2" ><b>Some</b> text over there</li>
 </ol>
 </div>
+
 </textarea>
 </div>
 <div id="right" class="okvir">
 <textarea id="code" cols="80" rows="24" >
-Q("div[src='X']", Q.ID("container")) ;
+/*
+Query what you make on the left
+CTRL+ENTER evaluates code
+Start with one of this examples:
+E:01
+// works only in latest FF, C, O and S
+l = Q.MATCH( /Some.+/g, "LI" )
+l[0].node.tagName + ", contains: " + l[0].match
+E:02
+var s = "--------------" ;
+Q.EACH( function (E) {
+  s += "\n\t" + E.nodeType + " : " + E.nodeName ;
+},
+"*", Q.ID("container") )
+s
+*/
 </textarea>
 </div>
-<span id="container" style="position:absolute; bottom:1%;" ></span>
+<span id="container" style="position:absolute; bottom:1%; left:1%; width:99%; min-height:3cm; background-color:#FFFAFA;" ></span>
 </body>
 <script type="text/javascript">
     $(function() {
