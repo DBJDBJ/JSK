@@ -33,8 +33,9 @@
     //          no result will return null
     Q = function(selector, container) {
         var list = [];
-        if (("string" === typeof selector) && ("object" === typeof container))
-            list = cached_result(cached_selections(container || document), selector);
+        if ("string" !== typeof selector) return list;
+        if ("object" !== typeof (container || document)) return list;
+        list = cached_result(cached_selections(container || document), selector);
         return list.length > 0 ? list : null;
     }
     // flush the cache
@@ -72,12 +73,11 @@
         return Q(selector, container).length > 0;
     }
     // for each element found call the function given
-    Q.EACH = function (method, selector, container)
-    {
+    Q.EACH = function(method, selector, container) {
         if ("function" !== typeof method) return;
-        var list = Q(selector, container), j = list.length;
-
-        for (; j < list.length; j++) {
+        var list = Q(selector, container), j = 0 ;
+        if (list)
+            for (; j < list.length; j++) {
             method(list[j]); // element found is passed as first argument
         }
 
