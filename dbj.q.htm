@@ -6,12 +6,14 @@
 <script src="dbj.q.js" type="text/javascript" ></script>
 <style type="text/css" >
     html { width:100%; height:100%; margin:0px; padding:5px; 
-           font:13px/1.5 courier new,monospace ;
+           font:larger/1.1 courier new,monospace ;
          } 
-div.okvir    { border:1px solid black; padding:4px; }         
-div#left  { width: 45%; height:80%; float:left; margin:5px; }
-div#right { width: 45%; height:80%; float:right; margin:5px; }
-div textarea { width:97%; height:97%; margin:1%; }
+div.okvir      { border:1px solid black; padding:4px; }         
+div#left       { width: 45%; height:80%; float:left; margin:5px; }
+div#right      { width: 45%; height:80%; float:right; margin:5px; }
+div textarea   { width:97%; height:97%; margin:1%; font: inherit; }
+span#container { position:absolute; bottom:1%; left:1%; width:99%; min-height:3cm; 
+                background-color:Transparent; }
 </style>
 </head>
 <body>
@@ -22,6 +24,7 @@ div textarea { width:97%; height:97%; margin:1%; }
 <ol style="whatever wherever" >
 <li id="LI1" >Some text <font size="3"><u>here</u></font></li>
 <li id="LI2" ><b>Some</b> text over there</li>
+<li id="LI3" ><table border=2 ><tr><th>A</th><th>B</th><th>C</th></tr><tr><td>1</td><td>2</td><td>3</td></tr></table></li>
 </ol>
 </div>
 
@@ -29,35 +32,31 @@ div textarea { width:97%; height:97%; margin:1%; }
 </div>
 <div id="right" class="okvir">
 <textarea id="code" cols="80" rows="24" >
-/*
-Query what you make on the left
-CTRL+ENTER evaluates code
-Start with one of this examples:
-E:01
-// works only in latest FF, C, O and S
-l = Q.MATCH( /Some.+/g, "LI" )
-l[0].node.tagName + ", contains: " + l[0].match
-E:02
-var s = "--------------" ;
-Q.EACH( function (E) {
-  s += "\n\t" + E.nodeType + " : " + E.nodeName ;
-},
-"*", Q.ID("container") )
-s
-*/
+// for every 'th' inside every table which has a border=2
+// check it if contains letter A
+// if it does put the result in an list to be returned
+// CTRL+ENTER to evaluate
+a = Q.M(/A/,"table[border='2'] th")
+a[0].node + ", contains: " + a[0].match
+
 </textarea>
 </div>
-<span id="container" style="position:absolute; bottom:1%; left:1%; width:99%; min-height:3cm; background-color:#FFFAFA;" ></span>
+<span id="container" ></span>
 </body>
 <script type="text/javascript">
     $(function() {
         //
-    var $code = $(Q.ID("code"));
+        var $code = $(Q.ID("code"));
         $code.keydown(function(E) {
             if (E.ctrlKey)
                 if (13 === E.keyCode) {
                 $("#container").html($("#test").val());
-                var result = "\n/*\n" + eval($code.val()) + "\n*/\n";
+                var result;
+                try {
+                    result = "\n/*\n" + eval($code.val()) + "\n*/\n";
+                } catch (x) {
+                    result = "\n/*\n" + x + "\n*/\n";
+                }
                 $code.val($code.val() + result);
             }
         });

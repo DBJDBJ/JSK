@@ -84,36 +84,40 @@
     }
     // methods for browser where TreeWalker exists
     if (document.createTreeWalker) {
-        // return the parent node containing the text if matched 
-        Q.MATCH = function(rx_, selector_, container_) {
+        // aggregate the whole text found inside a node given, and anywhere inside its tree
+        // return the result of match with regexp given
+        // white space is filtered out
+        Q.F = function(rootnode, regex) {
+            var walker = document.createTreeWalker(rootnode, NodeFilter.SHOW_TEXT, null, false)
+            walker.firstChild() //Walk to first text child node THAT IS TEXT
+            if (!walker.currentNode) return null;
+            var paratext = walker.currentNode.nodeValue;
+            while (walker.nextSibling()) { //Step through each sibling
+                paratext += walker.currentNode.nodeValue;
+            }
+            paratext = paratext.match(/\S+/g); // filter out newlines, tabs, etc ...
+            if (!paratext) return null; // there is no meaningfull text left
+            paratext = paratext.join(" ");
+            return regex ? paratext.match(regex) : paratext;
+        }
+        // for every  element found by selector
+        // create { "node": object , "match": "..."}
+        // if it contains text found by regexp given
+        // where 'node' is element , and 'match' is the result of 
+        // matching the whole of the text found inside the element, using the regexp given
+        Q.M = function(rx_, selector_, container_) {
             try {
-                function find_text(rootnode, regex) {
-                    var walker = document.createTreeWalker(rootnode, NodeFilter.SHOW_TEXT, null, false)
-                    walker.firstChild() //Walk to first text child node THAT IS TEXT
-                    if (!walker.currentNode) return null;
-                    var paratext = walker.currentNode.nodeValue, parent_ = walker.currentNode.parentNode;
-                    while (walker.nextSibling()) { //Step through each sibling
-                        paratext += walker.currentNode.nodeValue;
-                    }
-                    // filter out newlines, tabs, etc ...
-                    paratext = paratext.match(/\S+/g)
-                    // there is no meaningfull text left
-                    if (!paratext) return null;
-                    paratext = paratext.join(" ");
-                    paratext = regex ? paratext.match(regex) : paratext;
-                    return paratext ? { "node": parent_, "match": paratext} : null;
-                }
-                var retval = [];
+                var retval = [], rv;
                 Q.EACH(function(E) {
-                    var rv = find_text(E, rx_);
-                    if (rv) retval.push(rv);
+                    rv = Q.F(E, rx_);
+                    if (rv) retval.push({ "node": E, "match": rv });
                 }, selector_, container_);
                 return retval;
             } catch (x) {
-                return new Error("Q.MATCH()" + " : " + x);
+                return new Error("Q.T()" + " : " + x);
             }
         }
     } // eof if
 
-})();                     // end of Q closure
+})(); // end of Q closure
 //-------------------------------------------------------------------------------------
