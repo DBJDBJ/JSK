@@ -20,12 +20,12 @@
     function cached_selections(cont) {
         // return saved selections for the cont(ainer) or make it if not in the cache
         return cache[cont] || (cache[cont] = { "_container_": cont });
-    }
+    };
     // ss is individual cache [] element 
     function cached_result(ss, sel) {
         // take the result or make it and store it if not made
         return ss[sel] = ss[sel] || (ss[sel] = ss._container_.querySelectorAll(sel));
-    }
+    };
     // the Q method is visible on the level of extension aka "globaly"
     // selector is any valid CSS "like" selector
     // container method is optional
@@ -37,7 +37,7 @@
         if ("object" !== typeof (container || document)) return list;
         list = cached_result(cached_selections(container || document), selector);
         return list.length > 0 ? list : null;
-    }
+    };
     // flush the cache
     // the whole 
     // or  for the container if given
@@ -54,24 +54,24 @@
             }
         } else
             cache = [];
-    }
+    };
     // helper : query by ID only, 
     // return the first element found by id given
     // returns null if no element found
     Q.ID = function(id_string) {
         var list = Q("#" + id_string, document);
         return list.length > 0 ? list[0] : null;
-    }
+    };
     // use this to replace getElementByClassName
     Q.CLASS = function(class_name) {
         var list = Q("." + id_string, document);
         return list.length > 0 ? list[0] : null;
-    }
+    };
     // helper: return true if query has result,
     // otherwise null
     Q.NULL = function(selector, container) {
         return Q(selector, container).length > 0;
-    }
+    };
     // for each element found call the function given
     Q.EACH = function(method, selector, container) {
         if ("function" !== typeof method) return;
@@ -80,8 +80,7 @@
             for (; j < list.length; j++) {
             method(list[j]); // element found is passed as first argument
         }
-
-    }
+    };
 
     var _q_label_ = "_q_label_" + (+new Date());
     // label each element found by the selector+container given
@@ -99,7 +98,7 @@
         } catch (x) {
             Q.LOG("Q.LABEL()," + x);
         }
-    }
+    };
 
     // An micro-log 
     var logbuf_ = [], loglock_ = false,
@@ -119,9 +118,9 @@
             clearTimeout(tid); delete tid;
             logbuf_.unshift(q_log_msg_.format((new Date()).toLocaleTimeString()) + msg_);
         }, 0);
-    }
+    };
 
-})();             // end of Q closure
+})();                       // end of Q closure
 
 //
 // Q messages aka literal strings
@@ -145,6 +144,7 @@
     }; // eof Q.msg
 })();
 
+//-------------------------------------------------------------------------------------
 //
 // .net string.format like function
 // usage:   "{0} means 'zero'".format("nula") 
@@ -166,4 +166,60 @@ String.prototype.format = function() {
                var idx = $0.match(/\d+/);
                return args[idx] ? args[idx] : $0;
            });
-}
+};
+
+//-------------------------------------------------------------------------------------
+// (c) 2009-2010 by DBJ.ORG
+//     Please mail to: dbjdbj@gmail.com
+//     for the usage of this code to be granted 
+//
+// DBJ*Q is a micro-engine for simpler AND faster, page queries
+// Q.T = Q Text methods
+//-------------------------------------------------------------------------------------
+(function() {
+    if ("undefined" === typeof Q) {
+        return alert("ERROR!\nQ.T requires to be included after dbj.q.js!");
+    };
+    Q.T = {
+        F: function(rootnode, regex) {
+            ///<summary>
+            /// on the whole text found inside a node given, and anywhere inside its tree
+            /// return the result of match with regexp given
+            /// white space is filtered out, by the standard reg.exp. for that: /\S+/g
+            /// if no regex given, the whole text is returned
+            /// on error return null
+            ///</summary>
+            try {
+                var paratext = rootnode.innerText.match(/\S+/g); // filter out white spaces
+                if (!paratext) return null; // there is no meaningfull text left
+                paratext = paratext.join(" ");
+                return regex ? paratext.match(regex) : paratext;
+            } catch (x) {
+                Q.LOG("Q.T.F(), " + x);
+                return null;
+            }
+        },
+        M: function(rx_, selector_, container_) {
+            ///<summary>
+            /// for every  element found by selector
+            /// create { "node": object , "match": "..."}
+            /// if it contains text found by regexp given
+            /// where 'node' is element , and 'match' is the result of
+            /// matching the whole of the text found inside the element, using the regexp given
+            /// on no result return empty array
+            /// on error return null
+            ///</summary>
+            try {
+                var retval = [], rv;
+                Q.EACH(function(E) {
+                    rv = Q.T.F(E, rx_);
+                    if (rv) retval.push({ "node": E, "match": rv });
+                }, selector_, container_);
+                return retval;
+            } catch (x) {
+                Q.T.M("Q.T.M()" + " : " + x); return null;
+            }
+        }
+    }; // eof Q.T
+})();
+//-------------------------------------------------------------------------------------

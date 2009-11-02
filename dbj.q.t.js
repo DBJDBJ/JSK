@@ -7,7 +7,7 @@
 // Q.T = Q Text methods
 //-------------------------------------------------------------------------------------
 (function() {
-    if (!Q) {
+    if ("undefined" === typeof Q) {
         return alert("ERROR!\nQ.T requires to be included after dbj.q.js!");
     };
     Q.T = {
@@ -50,6 +50,6 @@
                 Q.T.M("Q.T.M()" + " : " + x); return null;
             }
         }
-} // eof Q.T
-    })();
+    }; // eof Q.T
+})();
 //-------------------------------------------------------------------------------------
