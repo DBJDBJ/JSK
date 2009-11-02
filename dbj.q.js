@@ -82,6 +82,25 @@
         }
 
     }
+
+    var _q_label_ = "_q_label_" + (+new Date());
+    // label each element found by the selector+container given
+    // previous labels will be replaced
+    // if label_ is object the label of that object will be returned
+    // null is returned for missing attributes
+    Q.LABEL = function(label_, selector_, container_) {
+        try {
+            if ("object" === typeof label_) {
+                return label_.getAttribute(_q_label_);
+            }
+            Q.EACH(function(E) {
+                E.setAttribute(_q_label_, label_);
+            }, selector_, container_);
+        } catch (x) {
+            Q.LOG("Q.LABEL()," + x);
+        }
+    }
+
     // An micro-log 
     var logbuf_ = [], loglock_ = false,
     logtid_ = setInterval(function() {
@@ -102,12 +121,14 @@
         }, 0);
     }
 
-})();     // end of Q closure
+})();             // end of Q closure
+
 //
 // Q messages aka literal strings
-    ( function () {
-        // messages, aka literal strings
-        // varialbe place holders in strings follow the .NET format rules
+//
+( function () {
+// messages, aka literal strings
+// {0} place holders in strings follow the .NET format rules
      var  en = {
                log : "Q log [{0}] ", // standard message for the log entry
                q_msg_err : "Q.msg ({0}), failed."
