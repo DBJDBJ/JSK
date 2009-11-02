@@ -1,16 +1,14 @@
 ------------------------------------------------------------------------------------
-(c) 2009-2010 by DBJ.ORG
-    Please mail to: dbjdbj@gmail.com
-    for the usage of this code to be granted 
+DBJ*Q(tm) : tiny-Query-engine for simpler AND faster page queries
 
-micro-engine for simpler AND faster page queries
+Copyright(c) 2009-2010 by DBJ.ORG
+Dual licensed under the MIT and GPL licenses.
+Please mail to: dbjdbj@gmail.com
+for the usage of this code to be granted 
+
+NOTE! Only W3C compliant browsers are suported
 
 NOTE! this works in all browser supported by this extension
       since its using querySelectorAll() method
-NOTE! here error checks are *minimal*, and there are no exceptions whatsoever.
-NOTE! this caches the results and thus works ONLY if you do not 
-      add or remove or change nodes you have been searching for. 
-      if you have done this, then use Q.FLUSH() ... see bellow
-      Which makes it ideal for CHROME extensions
-      2009.JAN.01 dbjdbj@gmail.com  Created
+NOTE! error checks are *minimal*
 ------------------------------------------------------------------------------------
