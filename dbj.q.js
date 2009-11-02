@@ -82,42 +82,67 @@
         }
 
     }
-    // methods for browser where TreeWalker exists
-    if (document.createTreeWalker) {
-        // aggregate the whole text found inside a node given, and anywhere inside its tree
-        // return the result of match with regexp given
-        // white space is filtered out
-        Q.F = function(rootnode, regex) {
-            var walker = document.createTreeWalker(rootnode, NodeFilter.SHOW_TEXT, null, false)
-            walker.firstChild() //Walk to first text child node THAT IS TEXT
-            if (!walker.currentNode) return null;
-            var paratext = walker.currentNode.nodeValue;
-            while (walker.nextSibling()) { //Step through each sibling
-                paratext += walker.currentNode.nodeValue;
-            }
-            paratext = paratext.match(/\S+/g); // filter out newlines, tabs, etc ...
-            if (!paratext) return null; // there is no meaningfull text left
-            paratext = paratext.join(" ");
-            return regex ? paratext.match(regex) : paratext;
-        }
-        // for every  element found by selector
-        // create { "node": object , "match": "..."}
-        // if it contains text found by regexp given
-        // where 'node' is element , and 'match' is the result of 
-        // matching the whole of the text found inside the element, using the regexp given
-        Q.M = function(rx_, selector_, container_) {
-            try {
-                var retval = [], rv;
-                Q.EACH(function(E) {
-                    rv = Q.F(E, rx_);
-                    if (rv) retval.push({ "node": E, "match": rv });
-                }, selector_, container_);
-                return retval;
-            } catch (x) {
-                return new Error("Q.T()" + " : " + x);
-            }
-        }
-    } // eof if
+    // An micro-log 
+    var logbuf_ = [], loglock_ = false,
+    logtid_ = setInterval(function() {
+        if (logbuf_.length < 1) return;
+        var logcopy = logbuf_;
+        if ("undefined" !== typeof console) console.log(logcopy.join("\n")); else alert(logcopy.join("\n"));
+        // a critical moment
+        logbuf_ = [];
+    }, 1000);
 
-})(); // end of Q closure
-//-------------------------------------------------------------------------------------
+    var q_log_msg_ = null;
+
+    Q.LOG = function(msg_) {
+        q_log_msg_ = q_log_msg_ || (q_log_msg_ = Q.msg("log"));
+        var tid = setTimeout(function() {
+            clearTimeout(tid); delete tid;
+            logbuf_.unshift(q_log_msg_.format((new Date()).toLocaleTimeString()) + msg_);
+        }, 0);
+    }
+
+})();     // end of Q closure
+//
+// Q messages aka literal strings
+    ( function () {
+        // messages, aka literal strings
+        // varialbe place holders in strings follow the .NET format rules
+     var  en = {
+               log : "Q log [{0}] ", // standard message for the log entry
+               q_msg_err : "Q.msg ({0}), failed."
+    }; // eof 'en' messages
+
+    Q.msg = function ( mid_ ) {
+        try {
+        var a = Array.prototype.slice.call(arguments) ; a.shift(); // all but first argument
+              return String.prototype.format.apply(en[mid_], a ) ;
+        } catch (x) {
+           Q.LOG(en.q_msg_err.format(mid_));
+           return en.q_msg_err.format(mid_);
+        }
+    }; // eof Q.msg
+})();
+
+//
+// .net string.format like function
+// usage:   "{0} means 'zero'".format("nula") 
+// returns: "nula means 'zero'"
+// place holders must be in a range 0-99.
+// if no argument given for the placeholder, 
+// no replacement will be done, so
+// "oops {99}".format("!")
+// returns the input
+// same placeholders will be all replaced 
+// with the same argument :
+// "oops {0}{0}".format("!","?")
+// returns "oops !!"
+//
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/\{(\d|\d\d)\}/g,
+           function($0) {
+               var idx = $0.match(/\d+/);
+               return args[idx] ? args[idx] : $0;
+           });
+}
