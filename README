@@ -13,3 +13,4 @@ NOTE! this works in all browser supported by this extension
       since its using querySelectorAll() method
 NOTE! error checks are *minimal*
 ------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
