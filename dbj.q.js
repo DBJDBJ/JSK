@@ -228,7 +228,7 @@ String.prototype.format = function() {
                 }, selector_, container_);
                 return retval;
             } catch (x) {
-                Q.T.M("Q.T.M()" + " : " + x); return null;
+                Q.LOG("Q.T.M()" + " : " + x); return null;
             }
         }
     }; // eof Q.T
