@@ -1,0 +1,28 @@
+<html>
+<head>
+<style type="text/css">
+html,body { 
+            height:100%; width:100%; font:10px/1.5 verdana; padding:5px;
+			background-color:#c0c0c0;
+          }
+form textarea { width:90%; height:90%; }
+</style>
+</head>
+  <body>
+    <form action="http://closure-compiler.appspot.com/compile" method="POST">
+	<p>
+    <input type="submit" value="Optimize">
+	</p>
+    <textarea name="js_code" cols="50" rows="5">
+    function hello(name) {
+      // Greets the user
+      alert('Hello, ' + name);
+    }
+    hello('New user');
+    </textarea>
+    <input type="hidden" name="compilation_level" value="WHITESPACE_ONLY">
+    <input type="hidden" name="output_format" value="text">
+    <input type="hidden" name="output_info" value="compiled_code">
+    </form>
+  </body>
+</html>
