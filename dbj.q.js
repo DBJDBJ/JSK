@@ -180,8 +180,10 @@ String.prototype.format = function() {
     if ("undefined" === typeof Q) {
         return alert("ERROR!\nQ.T requires to be included after dbj.q.js!");
     };
+
+    // IE9 navigator.userAgent == "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; OfficeLiveConnector.1.5; OfficeLivePatch.1.3)"
     Q.T = {
-        F: function(rootnode, regex) {
+        F:   (function() {
             ///<summary>
             /// on the whole text found inside a node given, and anywhere inside its tree
             /// return the result of match with regexp given
@@ -189,8 +191,15 @@ String.prototype.format = function() {
             /// if no regex given, the whole text is returned
             /// on error return null
             ///</summary>
+            var 
+            Rx = /\S+/g , /*filter out white spaces*/
+            text_getter = document.body && document.body.innerText 
+            ? function ( node ) { return  node.innerText.match(Rx); }
+            : function ( node ) { return  node.textContent.match(Rx); }
+            ;
+            return function (rootnode, regex) {
             try {
-                var paratext = rootnode.innerText.match(/\S+/g); // filter out white spaces
+                var paratext = text_getter(rootnode); 
                 if (!paratext) return null; // there is no meaningfull text left
                 paratext = paratext.join(" ");
                 return regex ? paratext.match(regex) : paratext;
@@ -198,7 +207,9 @@ String.prototype.format = function() {
                 Q.LOG("Q.T.F(), " + x);
                 return null;
             }
-        },
+        } 
+        }())
+        ,
         M: function(rx_, selector_, container_) {
             ///<summary>
             /// for every  element found by selector
