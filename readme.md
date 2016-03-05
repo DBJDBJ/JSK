@@ -1,6 +1,6 @@
 
 #DBJ's JavaScript Kernel (DBJ.JSK)
-##JavaScript idioms, routins and constructs that are core.
+##JavaScript idioms, routines and constructs that are core.
 ---
 ####Copyright(c) 2001-2016 by DBJ.ORG
 ####Dual licensed under the MIT and GPL licenses.
