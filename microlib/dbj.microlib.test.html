@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="dbj MICROLIB TESTING">
+<meta name="author" content="Dusan B. Jovanovic">
+<title>dbj();&trade; testing dbj MICROLIB &amp; Utils</title>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<style type="text/css">
+
+    caption {
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+<div id="container" class="container">
+    <!--
+  <h2>My TESTING Page</h2>
+  <p>Standard bootstrap table</p> 
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>John</td>
+        <td>Doe</td>
+        <td>john@example.com</td>
+      </tr>
+      <tr>
+        <td>Mary</td>
+        <td>Moe</td>
+        <td>mary@example.com</td>
+      </tr>
+      <tr>
+        <td>July</td>
+        <td>Dooley</td>
+        <td>july@example.com</td>
+      </tr>
+    </tbody>
+  </table>
+    -->
+
+</div>
+
+<!-- jQUERY core JavaScript ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="jquery-1.9.1.min"><\/script>')</script>
+    <script src="dbj.microlib.js"></script>
+    <script src="dbj.utl.js"></script>
+<!--	
+-->	
+<script type="text/javascript" id="pager_main_script">
+/* */
+var testing = (function () {
+
+     return {
+	     twriter : function () {
+	         //very simple but effective table 'writer',  all arguments are optional
+             //using bootstrap every table should have class ".table" plus some other class
+	     var tabla = dbj.utl.table($("#container", document.body), "your_table_id", "table table-striped");
+
+	     tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
+             .caption("dbj MICROLIB Results");
+			// .hdr("Yet","Another","Header");
+
+	     tabla.row("dbj.round( Math.PI,2)",    dbj.round(Math.PI, 2), "Why do we have this in the dbj*MICROLIB?"); // proceed with number of columns
+	     tabla.row('dbj.num ("1.1")', dbj.num("1.1"), "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.");
+	     tabla.row('dbj.num ("1")")', dbj.num("1"), " works everywhere is any JavaScript. It does it's best to transform any value into 'number'");
+	     tabla.row('dbj.num (new Date())', dbj.num(new Date()), " transformed to number of ticks");
+	     tabla.row('dbj.num (new String())', dbj.num(new String()), " the length of the empty string ");
+	     tabla.row('dbj.num ("")', dbj.num(""), " ditto ... ");
+	     tabla.row('dbj.num (new Array())', dbj.num(new Array()), " the length of the empty array is 0");
+	     tabla.row('dbj.num ([])', dbj.num(new Array()), " the length of the empty array is 0");
+	     tabla.row('dbj.num ([1,2,3])', dbj.num([1,2,3]), " Explain this then!");
+	     tabla.row('dbj.num (function(){})', dbj.num(function () { }), " Not a surprise or ... ;) ");
+	     tabla.row('dbj.num (new Object())', dbj.num(new Object()), " {} has no any number property, ditto it is a NaN ");
+	     tabla.row('dbj.num ({ length:0})', dbj.num({ length: 0 }), " Eh ;) ");
+
+		// $(tabla.uid()).dataTable(); // apply 'dataTable' jQuery plugin 
+		}
+	 }
+}())
+/* */
+$(function () {
+//    dbj.print("dbj(); testing dbj");
+//    dbj.LOG.E( "dbj.utl.round(123.45678,2)" );
+
+	  try {
+				testing.twriter();
+	  } catch (x) {
+		  console.group("dbj MICROLIB TESTING");
+	      console.error("EXCEPTION" + x );
+		  console.groupEnd();
+	  }
+});
+/* */
+    </script>
+</body>
+</html>

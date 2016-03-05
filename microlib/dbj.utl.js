@@ -17,10 +17,14 @@ as it will provoke inclusion of firebug-lite
     );
 
 */
-if (!this.dbj) { alert("This file requires previous inclusion of dbj root object which is in dbj.microlib.js"); }
-else {
-    "use strict";
+if (!this.dbj) { 
+alert("This file requires previous inclusion of dbj root object which is in dbj.microlib.js"); 
 
+dbj = {} ;
+
+}
+
+dbj.utl = {} ;
 /* 
 help summarizing or averaging values saved in this cache 
 of key/value pairs where values are always numerical values 
@@ -31,7 +35,8 @@ example:
 		dbj.summa.sum("B") returns 101
 		dbj.summa.sum("C") returns 0
 */
-  summa : (function () {
+  dbj.utl.summa = (function () {
+    "use strict";
             var obj_ = {},
         sum_ = function (arr) { var l = arr.length, sum = 0; while (l--) { sum += arr[l]; }; return sum; },
         avg_ = function (arr) { return sum_(arr) / arr.length; },
@@ -55,7 +60,7 @@ example:
                 all: function (k) { return (obj_[k] ? [].concat(obj_[k])   : []) },
                 rst: function (k) { if (obj_[k]) { var old = obj_[k]; obj_[k] = []; return old; } return [];}
             };
-		}()),
+		}());
         /*
         use this function to harvest form values on inputs named in its "defaults" argument
         example call :
@@ -63,7 +68,7 @@ example:
         look for inputs name, age and sex in the form "myForm". if input value is null use the
         values given in the argument.
         */
-        harvester: function (frm_id, defaults) {
+        dbj.utl.harvester = function (frm_id, defaults) {
             var $frm = jQuery("#" + frm_id, document.object), $input,
             getval = function (id_) {
                 $input = $frm.find("input#" + id_);
@@ -73,7 +78,7 @@ example:
             return defaults;
         },
 
-        table: function (host, id, klass, undefined) {
+        dbj.utl.table = function (host, id, klass, undefined) {
             /*
             very simple but effective table 'writer'
 
@@ -96,12 +101,22 @@ example:
             id || (id = "dbjtable_" + (0 + new Date));
             klass || (klass = "dbjtable");
             var
-            slice = Array.prototype.slice,
-            /* attach to table if exist */
-            $existing = $("#" + id),
-            table = $existing[0] ? $existing : jQuery("<table id='{0}' class='{1}'><caption></caption><thead></thead><tbody></tbody>".format(id, klass)).appendTo(host),
-            $table = jQuery(table[0], host), colcount = null;
-            delete table;
+                slice = Array.prototype.slice,
+                $table = $("#" + id),
+                colcount = 0;
+
+            if ( ! $table[0] ) {
+                $table = jQuery("<table id='{0}' class='{1}'><caption></caption><thead></thead><tbody></tbody>".format(id, klass));
+                $table.appendTo(host);
+            }
+
+            function selfcheck() {
+                if (! $table[0]) {
+                    console.error("dbj.utl.table() : This is wrong. No table to handle?");
+                    return false;
+                }
+                    return true ;
+            }
 
             /* 
             first row added defines number of columns 
@@ -121,17 +136,23 @@ example:
             }
             return {
                 hdr: function () {
-                    $table.find("thead").append(to_row(slice.call(arguments), true)); return this;
+                    if ( selfcheck() )
+                        $table.find("thead").append(to_row(slice.call(arguments), true));
+                    return this;
                 },
                 row: function () {
-                    $table.find("tbody").append(to_row(slice.call(arguments))); return this;
+                    if (selfcheck())
+                        $table.find("tbody").append(to_row(slice.call(arguments))); 
                     return this;
                 },
                 caption: function (caption) {
-                    $table.find("caption").html(caption || "Caption"); return this;
+                    if (selfcheck())
+                        $table.find("caption").html(caption || "Caption");
+                    return this;
                 },
                 err: function () {
-                    $table.find("tbody").append(to_row(
+                    if (selfcheck())
+                        $table.find("tbody").append(to_row(
                     "<span style='color:#cc0000;'>{0}</span>".format(slice.call(arguments).join(" ")))
                     );
                     return this;
@@ -139,7 +160,5 @@ example:
                 uid: function (cb) { dbj.assert("function" == typeof cb);  cb(id); return this ; }
             }
         }
-        /*-----------------------------------------------------------------------------------------------*/
-    }; /* dbj.utl */
-    /*-----------------------------------------------------------------------------------------------*/
-};
+/*-----------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------*/

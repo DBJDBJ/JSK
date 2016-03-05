@@ -85,7 +85,7 @@ var dbj = {
 	always using the console object
 	but adding functionality
     */
-	console = (function () {
+	console : (function () {
 		    var
 			console_cmd = { 
 				"log" 		: console.log, 
@@ -165,5 +165,5 @@ var dbj = {
 } /* eof dbj {} */
 
 
-} ());
+
 
