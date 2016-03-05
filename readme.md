@@ -1,10 +1,10 @@
-#DBJ*Q(tm) : tiny-Query-engine 
-#            Simpler and faster element queries
+#DBJ*Q(tm) : Quick-Query-Engine 
+##            Tiny Simpler and faster element queries
 ---
-###Copyright(c) 2009-2010 by DBJ.ORG
-###Dual licensed under the MIT and GPL licenses.
-###Please mail to: dbjdbj@gmail.com
-###for the usage of this code to be granted 
+####Copyright(c) 2009-2010 by DBJ.ORG
+####Dual licensed under the MIT and GPL licenses.
+####Please mail to: dbjdbj@gmail.com
+####for the usage of this code to be granted 
 
 ####NOTE! Only W3C compliant browsers are suported
 ####NOTE! this works in all browser supporting document.querySelectorAll() method
