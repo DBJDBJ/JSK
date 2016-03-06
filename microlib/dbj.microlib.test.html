@@ -18,8 +18,7 @@
 </head>
 <body>
 <div id="container" class="container">
-    <!--
-  <h2>My TESTING Page</h2>
+ <h2>My TESTING Page</h2>
   <p>Standard bootstrap table</p> 
   <table class="table table-striped">
     <thead>
@@ -48,7 +47,6 @@
     </tbody>
   </table>
     -->
-
 </div>
 
 <!-- jQUERY core JavaScript ================================================== -->
@@ -59,19 +57,20 @@
     <script src="dbj.utl.js"></script>
 <!--	
 -->	
-<script type="text/javascript" id="pager_main_script">
+<script type="text/javascript" id="page_main_script">
 /* */
 var testing = (function () {
 
      return {
 	     twriter : function () {
 	         //very simple but effective table 'writer',  all arguments are optional
-             //using bootstrap every table should have class ".table" plus some other class
+	         //using bootstrap every table should have class ".table" plus some other class
+             //for styling it
 	     var tabla = dbj.utl.table($("#container", document.body), "your_table_id", "table table-striped");
 
 	     tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
              .caption("dbj MICROLIB Results");
-			// .hdr("Yet","Another","Header");
+			 .caption("http://dbj.systems");
 
 	     tabla.row("dbj.round( Math.PI,2)",    dbj.round(Math.PI, 2), "Why do we have this in the dbj*MICROLIB?"); // proceed with number of columns
 	     tabla.row('dbj.num ("1.1")', dbj.num("1.1"), "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.");
@@ -85,6 +84,9 @@ var testing = (function () {
 	     tabla.row('dbj.num (function(){})', dbj.num(function () { }), " Not a surprise or ... ;) ");
 	     tabla.row('dbj.num (new Object())', dbj.num(new Object()), " {} has no any number property, ditto it is a NaN ");
 	     tabla.row('dbj.num ({ length:0})', dbj.num({ length: 0 }), " Eh ;) ");
+
+	     tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
+	   
 
 		// $(tabla.uid()).dataTable(); // apply 'dataTable' jQuery plugin 
 		}
