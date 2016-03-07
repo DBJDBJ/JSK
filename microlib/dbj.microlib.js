@@ -25,7 +25,7 @@ if ("function" !== typeof String.format)
     /*
     */
 var dbj = {
-	
+
     dummy: (function () {
         var TOS_ = Object.prototype.toString,
         HOP_ = Object.prototype.hasOwnProperty;
@@ -39,7 +39,7 @@ var dbj = {
         if ("function" !== typeof window.isObject) {
             window.isObject = function (x) { return roleof(x) === "Object"; }
         }
-    } ()),
+    }()),
 
 
     XMLHttpFactories: [
@@ -47,7 +47,7 @@ var dbj = {
 	function () { return new ActiveXObject("Msxml2.XMLHTTP") },
 	function () { return new ActiveXObject("Msxml3.XMLHTTP") },
 	function () { return new ActiveXObject("Microsoft.XMLHTTP") }
-     ],
+    ],
 
     createXMLHTTPObject: function () {
         var i = dbj.XMLHttpFactories.length, e;
@@ -85,85 +85,140 @@ var dbj = {
 	always using the console object
 	but adding functionality
     */
-	console : (function () {
-		    var
-			console_cmd = { 
-				"log" 		: console.log, 
-				"assert" 	: console.assert , 
-				"info" 		: console.info, 
-				"error" 	: console.err,
-				"begin"     : group_begin ,
-				"end"       : group_end
-			},
-			group_begin = function ()  { console.group("dbj MICROLIB"); },
-			group_end   = function ()  { console.groupEnd(); };
-			/*
-			 argument format
-			 { cmd : "log", obj : object, msg : "message", grp: true | false }
-			*/
-			return  function ( arg_ )  {
-				var cmd = arg_["cmd"], s_ = arg_["msg"], group_ = arg["grp"], obj_ = arg["obj"];
-					if ( cmd in console_cmd ) {
-						if ( group_ ) group_begin();
-							  dbj.console_cmd[cmd](obj_, s_ );
-						if ( group_ ) group_end();
-					} else {
-						group_begin();
-							console.err("dbj.console() received a wrong command?");
-						group_end();
-					}
-			} 
-	}()),
-		assert : function (x) {
-			if (!x) {
-				dbj.console({ cmd:"error", msg:"dbj.assert failed for: " + x, grp : true }) ; 
-				throw "dbj.assert failed for: " + x ;
-			}
-		},
-		print: function ( s_, grouped ) {
-			dbj.console({ cmd: "log", obj: s_, grp: grouped } ) ;
-		} ,
-		
-		print_grp_begin : function () {
-			dbj.console({ cmd: "begin" } ) ;
-		},
-		
-		print_grp_end   : function () {
-			dbj.console({ cmd: "end" } ) ;
-		},
-
-        evil : (function (x) {
-		// eval in presence of 'use strict'	
-            "use strict";
-		// spn = secret property name
-		    var spn = "evil_" + (+new Date());
-            return function (x) {
-				(1, eval)("top['" + spn + "'] = (" + x + ")");
-				return top[spn];
-			}
-        }()),
-		/*
-		    one of those mind bending things for JS begginers
-			usefull for assuring value is a number
-			of course if it is not a object when it is number NaN
-			num ("1.1")  --> number 1.1 
-			num ("1")    --> number 1
-			num (new Date()) --> number 1457181273435
-			num ( new String() ) --> number 0
-			num ( new Object() ) --> number NaN
-		*/
-	    num : function num (a) {
-			return a - 0 ;
-        } ,
-        /* quick number rounder */
-        round: function (original_number, decimals) {
-            var POW = Math.pow(10, decimals), 
-				V1 	= original_number * POW, 
-				V2 	= Math.round(V1);
-            return V2 / POW;
+    console: (function () {
+        var
+        console_cmd = {
+            "log": console.log,
+            "assert": console.assert,
+            "info": console.info,
+            "error": console.err,
+            "begin": group_begin,
+            "end": group_end
+        },
+        group_begin = function () { console.group("dbj MICROLIB"); },
+        group_end = function () { console.groupEnd(); };
+        /*
+         argument format
+         { cmd : "log", obj : object, msg : "message", grp: true | false }
+        */
+        return function (arg_) {
+            var cmd = arg_["cmd"], s_ = arg_["msg"], group_ = arg["grp"], obj_ = arg["obj"];
+            if (cmd in console_cmd) {
+                if (group_) group_begin();
+                dbj.console_cmd[cmd](obj_, s_);
+                if (group_) group_end();
+            } else {
+                group_begin();
+                console.err("dbj.console() received a wrong command?");
+                group_end();
+            }
         }
-} /* eof dbj {} */
+    }()),
+    assert: function (x) {
+        if (!x) {
+            dbj.console({ cmd: "error", msg: "dbj.assert failed for: " + x, grp: true });
+            throw "dbj.assert failed for: " + x;
+        }
+    },
+    print: function (s_, grouped) {
+        dbj.console({ cmd: "log", obj: s_, grp: grouped });
+    },
 
+    print_grp_begin: function () {
+        dbj.console({ cmd: "begin" });
+    },
 
+    print_grp_end: function () {
+        dbj.console({ cmd: "end" });
+    },
+
+    evil: (function (x) {
+        // eval in presence of 'use strict'	
+        "use strict";
+        // spn = secret property name
+        var spn = "evil_" + (+new Date());
+        return function (x) {
+            (1, eval)("top['" + spn + "'] = (" + x + ")");
+            return top[spn];
+        }
+    }()),
+    /*
+      numerical section follows
+    */
+    /*
+        one of those mind bending things for JS begginers
+        usefull for assuring value is a number
+        of course if it is not a object when it is number NaN
+        num ("1.1")  --> number 1.1 
+        num ("1")    --> number 1
+        num (new Date()) --> number 1457181273435
+        num ( new String() ) --> number 0
+        num ( new Object() ) --> number NaN
+    */
+    num: function num(a) {
+        return a - 0;
+    },
+    /* quick number rounder */
+    round: function (original_number, decimals) {
+        var POW = Math.pow(10, decimals),
+            V1 = original_number * POW,
+            V2 = Math.round(V1);
+        return V2 / POW;
+    },
+    /* http://www.2ality.com/2012/02/js-integers.html */
+    toUint32: function (x) {
+        return x >>> 0;
+    },
+
+    toInt32: function (x) {
+        return x >> 0;
+    },
+    // returns Uint32 seed randomized by time ticks
+    seed: function () { return (Math.random() * (new Date() - 0)) >>> 0; }
+    // above returns unique values even if called in smallest possible intervals
+    // eg: [seed(), seed(), seed()]
+
+}; /* eof dbj {} */
+
+/* the stuff only old magician can produce :) */
+    (function () {
+        var Guid = {
+            empty: "00000000-0000-0000-0000-000000000000",
+            make: function () {
+                return (Guid.four() +
+                        Guid.four() + "-" +
+                        Guid.four() + "-" +
+                        Guid.four() + "-" +
+                        Guid.four() + "-" +
+                        Guid.four() +
+                        Guid.four() +
+                        Guid.four());
+            },
+            four: function () {
+                return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1).toUpperCase();
+            }
+        };
+
+        dbj.GUID = function () { return Guid.make(); }
+    })()
+
+// this works only in IE < 11, in WSH's and in HTA's of course
+// thus when in html be sure not to use 
+// <meta http-equiv="X-UA-Compatible" content="IE=edge">
+// if you want bellow to work
+/*@cc_on @if ( @_win32 )
+dbj.GUID = function () 
+{
+    try
+    {
+        var x = new ActiveXObject("Scriptlet.TypeLib");
+    return (x.GUID);
+    }
+    catch (e)
+    {
+    return ("error creating GUID");
+    }
+}
+@end @*/
 
 

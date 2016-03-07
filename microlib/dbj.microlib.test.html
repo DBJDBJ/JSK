@@ -11,42 +11,53 @@
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <style type="text/css">
 
-    caption {
-        text-align: center;
+    caption { text-align: center;
     }
+
+    details summary { font-size:large;
+    }
+
+    #test_button { margin:2em;
+    }
+
+/* http://codepen.io/morewry/pen/gbJvy */
+/* http://daneden.me/animate/ */
+@keyframes fadeInDown {
+	0% {
+		opacity: 0;
+		transform: translateY(-1.25em);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+.details4[open] {
+	animation-name: fadeInDown;
+  animation-duration: 1s;
+}
+
+/* resets */
+details { margin-bottom: 0.25em; line-height: 1.25; }
 </style>
 </head>
 <body>
+    <div class="jumbotron">
+    </div>
 <div id="container" class="container">
- <h2>My TESTING Page</h2>
-  <p>Standard bootstrap table</p> 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Email</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>John</td>
-        <td>Doe</td>
-        <td>john@example.com</td>
-      </tr>
-      <tr>
-        <td>Mary</td>
-        <td>Moe</td>
-        <td>mary@example.com</td>
-      </tr>
-      <tr>
-        <td>July</td>
-        <td>Dooley</td>
-        <td>july@example.com</td>
-      </tr>
-    </tbody>
-  </table>
-    -->
+    <div class="jumbotron">
+        <h1>DBJ*JSC&trade;</h1>
+        <h3>dbj.org JavaScript Core (DBJ*JSC)</h3>
+        <p>
+            Testing page of dbj.micrlolib.js and dbj.util.js
+        </p>
+    </div>
+    <div class="page-header" >
+        <h1>Results</h1>
+    <button onclick="all_tests()" id="test_button" class="btn btn-primary">Start All Test</button>
+        <div id="all_tests_container">
+        </div>
+      </div>
 </div>
 
 <!-- jQUERY core JavaScript ================================================== -->
@@ -59,51 +70,85 @@
 -->	
 <script type="text/javascript" id="page_main_script">
 /* */
-var testing = (function () {
+    var testing = (function () {
 
-     return {
-	     twriter : function () {
-	         //very simple but effective table 'writer',  all arguments are optional
-	         //using bootstrap every table should have class ".table" plus some other class
-             //for styling it
-	     var tabla = dbj.utl.table($("#container", document.body), "your_table_id", "table table-striped");
+        //using bootstrap every table should have class ".table" plus other class for styling
+        var bootstrap_table_classing = "table table-striped";
+        // &#9733; (black star) or the &#9734; (white star with black borders).
+        var default_caption = "<h1>&#9733;&#9733;&#9733;</h1>";
 
-	     tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
-             .caption("dbj MICROLIB Results");
-			 .caption("http://dbj.systems");
+        return {
+            numerics: function (test_host_element, test_uid, caption) {
+                //very simple but effective table 'writer',  all arguments are optional
+                var tabla = dbj.utl.table(test_host_element, "table_" + test_uid, bootstrap_table_classing);
 
-	     tabla.row("dbj.round( Math.PI,2)",    dbj.round(Math.PI, 2), "Why do we have this in the dbj*MICROLIB?"); // proceed with number of columns
-	     tabla.row('dbj.num ("1.1")', dbj.num("1.1"), "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.");
-	     tabla.row('dbj.num ("1")")', dbj.num("1"), " works everywhere is any JavaScript. It does it's best to transform any value into 'number'");
-	     tabla.row('dbj.num (new Date())', dbj.num(new Date()), " transformed to number of ticks");
-	     tabla.row('dbj.num (new String())', dbj.num(new String()), " the length of the empty string ");
-	     tabla.row('dbj.num ("")', dbj.num(""), " ditto ... ");
-	     tabla.row('dbj.num (new Array())', dbj.num(new Array()), " the length of the empty array is 0");
-	     tabla.row('dbj.num ([])', dbj.num(new Array()), " the length of the empty array is 0");
-	     tabla.row('dbj.num ([1,2,3])', dbj.num([1,2,3]), " Explain this then!");
-	     tabla.row('dbj.num (function(){})', dbj.num(function () { }), " Not a surprise or ... ;) ");
-	     tabla.row('dbj.num (new Object())', dbj.num(new Object()), " {} has no any number property, ditto it is a NaN ");
-	     tabla.row('dbj.num ({ length:0})', dbj.num({ length: 0 }), " Eh ;) ");
+                tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
+                    .caption("{0}".format(caption || default_caption));
 
-	     tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
-	   
+                tabla.row("dbj.round( Math.PI,2)", dbj.round(Math.PI, 2), "Why do we have this in the dbj*MICROLIB?"); // proceed with number of columns
+                tabla.row('dbj.num ("1.1")', dbj.num("1.1"), "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.");
+                tabla.row('dbj.num ("1")")', dbj.num("1"), " works everywhere is any JavaScript. It does it's best to transform any value into 'number'");
+                tabla.row('dbj.num (new Date())', dbj.num(new Date()), " transformed to number of ticks");
+                tabla.row('dbj.num (new String())', dbj.num(new String()), " the length of the empty string ");
+                tabla.row('dbj.num ("")', dbj.num(""), " ditto ... ");
+                tabla.row('dbj.num (new Array())', dbj.num(new Array()), " the length of the empty array is 0");
+                tabla.row('dbj.num ([])', dbj.num(new Array()), " the length of the empty array is 0");
+                tabla.row('dbj.num ([1,2,3])', dbj.num([1, 2, 3]), " Explain this then!");
+                tabla.row('dbj.num (function(){})', dbj.num(function () { }), " Not a surprise or ... ;) ");
+                tabla.row('dbj.num (new Object())', dbj.num(new Object()), " {} has no any number property, ditto it is a NaN ");
+                tabla.row('dbj.num ({ length:0})', dbj.num({ length: 0 }), " Eh ;) ");
 
-		// $(tabla.uid()).dataTable(); // apply 'dataTable' jQuery plugin 
-		}
-	 }
-}())
+            },
+            other: function (test_host_element, test_uid, caption) {
+                var tabla = dbj.utl.table(test_host_element, "table_" + test_uid, bootstrap_table_classing);
+
+                tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
+                    .caption("{0}".format(caption || default_caption));
+                tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
+            }
+        }
+    }());
+    /* 
+     <details id="detalji" closed class="details4">
+                <summary>VIS: Crveni Detalji</summary>
+                <div id="test_results">TESTOVI REZULTATI</div>
+            </details>
+    */
+function make_detail(classes, summary_text) {
+    /* details closed attribute not used ... EDGE does not understand details yet */
+    return jQuery(
+        '<details id="{0}" closed class="{1}"><summary>{2}</summary></details>'
+        .format(dbj.GUID(), (classes || ""), (summary_text || "") )
+    )[0];
+}
+function all_tests() {
+
+    var $tests_container = $("#all_tests_container"), details_class = "details4";
+
+    function add_test_then_execute(test_cb, detail_caption, table_caption) {
+        var details_element = make_detail(details_class, detail_caption);
+        dbj.assert(details_element);
+            $tests_container.append(details_element);
+        dbj.assert(roleof(test_cb) === "Function");
+        test_cb(details_element, details_element.id, table_caption);
+    }
+    
+    try {
+            add_test_then_execute(testing.numerics, "Numerics");
+            add_test_then_execute(testing.other,    "Other");
+
+    } catch (x) {
+        console.group("dbj MICROLIB TESTING");
+        console.error("EXCEPTION" + x);
+        console.groupEnd();
+    }
+}
 /* */
 $(function () {
 //    dbj.print("dbj(); testing dbj");
 //    dbj.LOG.E( "dbj.utl.round(123.45678,2)" );
 
-	  try {
-				testing.twriter();
-	  } catch (x) {
-		  console.group("dbj MICROLIB TESTING");
-	      console.error("EXCEPTION" + x );
-		  console.groupEnd();
-	  }
+
 });
 /* */
     </script>
