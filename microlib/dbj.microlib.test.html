@@ -113,6 +113,9 @@ details { margin-bottom: 0.25em; line-height: 1.25; }
                 tabla.row('dbj.createXHR()', dbj.try_calling_nicely( this, dbj.createXHR ), "Browser agnostic XMLHttpRequest");
                 tabla.row('dbj.$("#container")', dbj.$("#container"), "querySelector");
                 tabla.row('dbj.$$("div")', dbj.$("#container"), "querySelectorAll");
+                tabla.row('dbj.later(this, function () { console.log("dbj.later works ok :)")}, 12 )',
+                    dbj.later(this, function () { dbj.print("dbj.later works ok :)", true); }, 12),
+                    "execute it but latter. check console for result");
             }
         }
     }());

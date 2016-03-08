@@ -99,53 +99,30 @@ var dbj = {
     /* 
 	multipuropse logging, aserting etc... 
 	always using the console object
-	but adding functionality
+	but adding functionality ... perhaps?
     */
-    console: (function () {
-        var
-        console_cmd = {
-            "log": console.log,
-            "assert": console.assert,
-            "info": console.info,
-            "error": console.err,
-            "begin": group_begin,
-            "end": group_end
-        },
-        group_begin = function () { console.group("dbj MICROLIB"); },
-        group_end = function () { console.groupEnd(); };
-        /*
-         argument format
-         { cmd : "log", obj : object, msg : "message", grp: true | false }
-        */
-        return function (arg_) {
-            var cmd = arg_["cmd"], s_ = arg_["msg"], group_ = arg["grp"], obj_ = arg["obj"];
-            if (cmd in console_cmd) {
-                if (group_) group_begin();
-                dbj.console_cmd[cmd](obj_, s_);
-                if (group_) group_end();
-            } else {
-                group_begin();
-                console.err("dbj.console() received a wrong command?");
-                group_end();
-            }
-        }
-    }()),
-    assert: function (x) {
+    console: {
+        group       : function () { console.group("dbj MICROLIB"); },
+        group_end   : function () { console.groupEnd(); }
+    },
+
+    assert: function (x, group_) {
         if (!x) {
-            dbj.console({ cmd: "error", msg: "dbj.assert failed for: " + x, grp: true });
+            dbj.later(dbj, function () {
+                if (group_) this.console.group();
+                console.err("dbj.assert failed for: " + x + ", msg: " + x.message);
+                if (group_) this.console.group_end();
+            });
             throw "dbj.assert failed for: " + x;
         }
     },
-    print: function (s_, grouped) {
-        dbj.console({ cmd: "log", obj: s_, grp: grouped });
-    },
 
-    print_grp_begin: function () {
-        dbj.console({ cmd: "begin" });
-    },
-
-    print_grp_end: function () {
-        dbj.console({ cmd: "end" });
+    print: function (s_, group_) {
+        dbj.later(dbj, function () {
+            if (group_) this.console.group();
+            console.log(s_);
+            if (group_) this.console.group_end();
+        });
     },
 
     evil: (function (x) {
