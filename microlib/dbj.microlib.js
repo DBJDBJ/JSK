@@ -42,25 +42,41 @@ var dbj = {
     }()),
 
 
-    XMLHttpFactories: [
-	function () { return new XMLHttpRequest() },
-	function () { return new ActiveXObject("Msxml2.XMLHTTP") },
-	function () { return new ActiveXObject("Msxml3.XMLHTTP") },
-	function () { return new ActiveXObject("Microsoft.XMLHTTP") }
-    ],
+    try_calling_nicely : function () {
+        try {
+            var args_ = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
+            var context = args_[0], 
+            FP = args_[1] ;
+            return FP.apply(context, args_.slice(2) );
+        } catch (x) {
+            return x.message ;
+        };
+    },
 
-    createXMLHTTPObject: function () {
-        var i = dbj.XMLHttpFactories.length, e;
-        while (i--) {
-            try {
-                return dbj.XMLHttpFactories[i]();
+    createXHR: function () {
+
+        var XMLHttpFactories = [
+	        function () { return new XMLHttpRequest() },
+	        function () { return new ActiveXObject("Msxml2.XMLHTTP") },
+	        function () { return new ActiveXObject("Msxml3.XMLHTTP") },
+	        function () { return new ActiveXObject("Microsoft.XMLHTTP") }
+        ];
+
+        dbj.createXHR = function () {
+            var i = XMLHttpFactories.length, e;
+            while (i--) {
+                try {
+                    return XMLHttpFactories[i]();
+                }
+                catch (e) {
+                    /**/
+                }
             }
-            catch (e) {
-                /**/
-            }
+            alert("dbj.createXMLHTTPObject() failed ?");
+            return false;
         }
-        alert("dbj.createXMLHTTPObject() failed ?");
-        return false;
+
+        return dbj.createXHR();
     },
     $: function (selector, el) {
         return (el || document).querySelector(selector);

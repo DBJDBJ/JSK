@@ -39,10 +39,14 @@
 
 /* resets */
 details { margin-bottom: 0.25em; line-height: 1.25; }
+
+    #header {
+        background: url('http://dbj.systems/wp-content/uploads/2016/02/dbj-scratched-aluminium-green-2048x2048.jpg');
+    }
 </style>
 </head>
 <body>
-    <div class="jumbotron">
+    <div class="jumbotron" id="header">
     </div>
 <div id="container" class="container">
     <div class="jumbotron">
@@ -104,7 +108,11 @@ details { margin-bottom: 0.25em; line-height: 1.25; }
 
                 tabla.hdr("Test", "Result", "Comment")  // defines table of 3 columns
                     .caption("{0}".format(caption || default_caption));
+
                 tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
+                tabla.row('dbj.createXHR()', dbj.try_calling_nicely( this, dbj.createXHR ), "Browser agnostic XMLHttpRequest");
+                tabla.row('dbj.$("#container")', dbj.$("#container"), "querySelector");
+                tabla.row('dbj.$$("div")', dbj.$("#container"), "querySelectorAll");
             }
         }
     }());
