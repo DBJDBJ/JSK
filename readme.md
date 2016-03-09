@@ -1,5 +1,5 @@
 
-#DBJ's JavaScript Kernel (DBJ.JSK)
+#DBJ's JavaScript Core (DBJ.JSC)
 ##JavaScript idioms, routines and constructs that are core.
 ---
 ####Copyright(c) 2001-2016 by DBJ.ORG
