@@ -1,27 +1,29 @@
 /*
     DBJ*MICROLIB GPL (c) 2011 by DBJ.ORG
 */
-// .net string.format like function
-// usage:   "{0} means 'zero'".format("nula") 
-// returns: "nula means 'zero'"
-// place holders must be in a range 0-99.
-// if no argument given for the placeholder, 
-// no replacement will be done, so
-// "oops {99}".format("!")
-// returns the input
-// same placeholders will be all replaced 
-// with the same argument :
-// "oops {0}{0}".format("!","?")
-// returns "oops !!"
-//
-if ("function" !== typeof String.format)
-    String.prototype.format = function () {
+if ("function" !== typeof String.format) {
+/**
+* .net string.format like function
+* usage:   "{0} means 'zero'".format("nula") 
+* returns: "nula means 'zero'"
+* place holders must be in a range 0-99.
+* if no argument given for the placeholder, 
+* no replacement will be done, so
+* "oops {99}".format("!")
+* returns the input
+* same placeholders will be all replaced 
+* with the same argument :
+* "oops {0}{0}".format("!","?")
+* returns "oops !!"
+*/
+String.prototype.format = function () {
         var args = arguments;
         return this.replace(/\{(\d|\d\d)\}/g, function ($0) {
             var idx = 1 * $0.match(/\d+/)[0]; return args[idx] !== undefined ? args[idx] : (args[idx] === "" ? "" : $0);
         }
             );
     }
+};
     /*
     */
 var dbj = {
@@ -84,23 +86,28 @@ var dbj = {
     $$: function (selector, el) {
         return (el || document).querySelectorAll(selector);
     },
+        /**
+         * execute function a bit later, default timeout is 1 micro sec,execution context is global name space
+         * arguments after 'timeout', are passed to the callback
+         */
     later: function (context, func, timeout) {
-        /* execute function a bit later, default timeout is 1 micro sec,execution context is global name space
-        arguments after 'timeout', are passed to the callback
-        */
         var args = timeout ? [].slice.call(arguments, 3) : [].slice.call(arguments, 1);
         context || (context = (this || window));
         var tid = setTimeout(function () {
             clearTimeout(tid); tid = null; delete tid;
-            func.apply(context, args);
+              try {
+                func.apply(context, args);
+              } catch (x) {
+                  throw x.message ;
+              }
         }, timeout || 1);
     },
 
-    /* 
-	multipuropse logging, aserting etc... 
-	always using the console object
-	but adding functionality ... perhaps?
-    */
+    /** 
+	 * multipuropse logging, aserting etc... 
+	 * always using the console object
+	 * but adding functionality ... perhaps?
+     */
     console: {
         group       : function () { console.group("dbj MICROLIB"); },
         group_end   : function () { console.groupEnd(); }
@@ -138,15 +145,17 @@ var dbj = {
     /*
       numerical section follows
     */
-    /*
-        one of those mind bending things for JS begginers
-        usefull for assuring value is a number
-        of course if it is not a object when it is number NaN
-        num ("1.1")  --> number 1.1 
-        num ("1")    --> number 1
-        num (new Date()) --> number 1457181273435
-        num ( new String() ) --> number 0
-        num ( new Object() ) --> number NaN
+    /**
+     *   one of those mind bending things for JS begginers
+     *   usefull for assuring value is a number
+     *   of course if it is not a object when it is number NaN
+     *   num ("1.1")  --> number 1.1 
+     *   num ("1")    --> number 1
+     *   num (new Date()) --> number 1457181273435
+     *   num ( new String() ) --> number 0
+     *   num ( new Object() ) --> number NaN
+     *
+     *@param {object} any legal javascript value
     */
     num: function num(a) {
         return a - 0;
@@ -166,10 +175,12 @@ var dbj = {
     toInt32: function (x) {
         return x >> 0;
     },
-    // returns Uint32 seed randomized by time ticks
+    /**
+     * returns Uint32 seed randomized by time ticks
+     * returns unique values even if called in smallest possible intervals
+     * eg: [seed(), seed(), seed()]
+     */
     seed: function () { return (Math.random() * (new Date() - 0)) >>> 0; }
-    // above returns unique values even if called in smallest possible intervals
-    // eg: [seed(), seed(), seed()]
 
 }; /* eof dbj {} */
 
@@ -195,10 +206,12 @@ var dbj = {
         dbj.GUID = function () { return Guid.make(); }
     })()
 
-// this works only in IE < 11, in WSH's and in HTA's of course
-// thus when in html be sure not to use 
-// <meta http-equiv="X-UA-Compatible" content="IE=edge">
-// if you want bellow to work
+/** 
+ * this works only in IE < 11, in WSH's and in HTA's of course
+ * thus when in html be sure not to use 
+ * <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ * if you want bellow to work
+ */
 /*@cc_on @if ( @_win32 )
 dbj.GUID = function () 
 {

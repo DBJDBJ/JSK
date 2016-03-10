@@ -19,13 +19,11 @@ as it will provoke inclusion of firebug-lite
 */
 if (!this.dbj) { 
 alert("This file requires previous inclusion of dbj root object which is in dbj.microlib.js"); 
-
-dbj = {} ;
-
+    dbj = {} ;
 }
 
 dbj.utl = {} ;
-/* 
+/** 
 help summarizing or averaging values saved in this cache 
 of key/value pairs where values are always numerical values 
 internal obj_ is object where each property is an array
@@ -61,7 +59,7 @@ example:
                 rst: function (k) { if (obj_[k]) { var old = obj_[k]; obj_[k] = []; return old; } return [];}
             };
 		}());
-        /*
+        /**
         use this function to harvest form values on inputs named in its "defaults" argument
         example call :
         var harvest = harvester("myForm", { "name" : "Default", "age" : 22, "sex" : "male" } );
@@ -78,27 +76,27 @@ example:
             return defaults;
         },
 
+   /**
+    * very simple but effective table 'writer'
+    *
+    * all arguments are optional
+    * var tabla = dbj.table(your_host_dom_element, "your_table_id", "your_css_class_name");
+    * 
+    * methods are chainable
+    * 
+    * tabla.hdr("ID", "Name", "Average Rating")  // defines table of 3 columns
+    * .caption("Waiting for " + query[1])
+    *
+    * .row(1,"Bob",3.5) // proceed with SAME number of columns
+    * .row(2,"DBJ",2.5); // 
+    * 
+    * optionaly style the table made, for example:
+    * tabla.uid( function( id_ ) { $("#"+id_ ).dataTable()  }); // apply 'dataTable' jQuery plugin 
+    * 
+    */
         dbj.utl.table = function (host, id, klass, undefined) {
-            /*
-            very simple but effective table 'writer'
-
-            all arguments are optional
-            var tabla = dbj.table(your_host_dom_element, "your_table_id", "your_css_class_name");
-
-            methods are chainable
-
-            tabla.hdr("ID", "Name", "Average Rating")  // defines table of 3 columns
-                 .caption("Waiting for " + query[1])
-
-                 .row(1,"Bob",3.5) // proceed with SAME number of columns
-                 .row(2,"DBJ",2.5); // 
-
-            optionaly style the table made, for example:
-            tabla.uid( function( id_ ) { $("#"+id_ ).dataTable()  }); // apply 'dataTable' jQuery plugin 
-
-            */
             host || (host = document.body);
-            id || (id = "dbjtable_" + (0 + new Date));
+            id || (id = dbj.GUID());
             klass || (klass = "dbjtable");
             var
                 slice = Array.prototype.slice,
@@ -123,21 +121,22 @@ example:
             latter can make row with different number; the table will be jaddged
             */
             function to_row(row_, header) {
-                if (jQuery.isArray(row_)) {
-                    if (!colcount) colcount = row_.length;
-                    var td = header ? "TH" : "TD", wid = Math.round(100 / colcount);
-                    td += " width='{0}%' ".format(wid);
-                    row_ = row_.join("</{0}><{0}>".format(td));
-                    return "<tr><{0}>{1}</{0}></tr>".format(td, row_);
-                }
-                else {
-                    throw "to_row() first argument must be array";
-                }
-            }
+
+                dbj.assert(roleof(row_) === "Array");
+                if (!colcount) colcount = row_.length;
+                var td = header ? "TH" : "TD", wid = Math.round(100 / colcount);
+                td += " width='{0}%' ".format(wid);
+                row_ = row_.join("</{0}><{0}>".format(td));
+                return "<tr><{0}>{1}</{0}></tr>".format(td, row_);
+            };
             return {
                 hdr: function () {
-                    if ( selfcheck() )
-                        $table.find("thead").append(to_row(slice.call(arguments), true));
+                    if (selfcheck()) {
+                        if ( roleof(arguments[0]) == "Array" )
+                            $table.find("thead").append(to_row(arguments[0], true));
+                        else
+                            $table.find("thead").append(to_row(slice.call(arguments), true));
+                    }
                     return this;
                 },
                 row: function () {
@@ -157,7 +156,7 @@ example:
                     );
                     return this;
                 },
-                uid: function (cb) { dbj.assert("function" == typeof cb);  cb(id); return this ; }
+                uid: function (cb) { dbj.assert( roleof(cb) === "Function" );  cb(id); return this ; }
             }
         }
 /*-----------------------------------------------------------------------------------------------*/

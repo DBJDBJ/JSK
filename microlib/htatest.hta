@@ -4,14 +4,14 @@
     <title></title>
 	<meta charset="utf-8" />
 	<HTA:APPLICATION
-  APPLICATIONNAME="dbj_hta_test"
-  ID="dbj_hta_test"
-  VERSION="0.1"
-  BORDER="dialog"
-  ICON="favicon.ico"
-  SCROLL="auto"
-  SCROLLFLAT="yes"
-  CONTEXTMENU="no"/>
+          APPLICATIONNAME="dbj_hta_test"
+          ID="dbj_hta_test"
+          VERSION="0.1"
+          BORDER="dialog"
+          ICON="favicon.ico"
+          SCROLL="auto"
+          SCROLLFLAT="yes"
+          CONTEXTMENU="no"/>
 </head>
 <body>
     <div id="console">
@@ -24,15 +24,23 @@
         //-------------------------------------------------------------------------------------------
         //
         //-------------------------------------------------------------------------------------------
-        function print_buffer_flush() { console.innerText = print_buffer_; }
-        function print(msg_) { print_buffer_ += "\n" + msg_; }
-        var print_buffer_ = (new Date()).toLocaleString();
+        function    print_buffer_flush() { console.innerText = print_buffer_; }
+        function    print(msg_) { print_buffer_ += "\n" + msg_; }
+        var         print_buffer_ = (new Date()).toLocaleString();
         //-------------------------------------------------------------------------------------------
         //
         //-------------------------------------------------------------------------------------------
         main();
         //-------------------------------------------------------------------------------------------
         //
+        function basic_net_info() {
+            var network = new ActiveXObject("Wscript.Network");
+            return basic_net_info = {
+                'computer'  : network.ComputerName,
+                'domain'    : network.UserDomain,
+                'user'      : network.UserName
+            };
+        }
         //-------------------------------------------------------------------------------------------
         function main() {
             adOBJ = GetObject("WinNT://./admin,user");
