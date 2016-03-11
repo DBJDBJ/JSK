@@ -1,5 +1,7 @@
 /*
-    DBJ*MICROLIB GPL (c) 2011 by DBJ.ORG
+    DBJ*MICROLIB GPL (c) 2011 - 2016 by DBJ.ORG
+    
+    NOTE: if right now U R on github.com press 'y' on the jeyboard to get to the permalink of this file
 */
 if ("function" !== typeof String.format) {
 /**
