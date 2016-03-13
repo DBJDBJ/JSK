@@ -30,7 +30,7 @@ String.prototype.format = function () {
     */
 var dbj = {
 
-    dummy: (function () {
+    "GLOBAL" : (function () {
         var TOS_ = Object.prototype.toString,
         HOP_ = Object.prototype.hasOwnProperty;
         // global helpers
@@ -42,6 +42,9 @@ var dbj = {
         }
         if ("function" !== typeof window.isObject) {
             window.isObject = function (x) { return roleof(x) === "Object"; }
+        }
+        if ("function" !== typeof window.isFunction) {
+            window.isObject = function (x) { return roleof(x) === "Function"; }
         }
     }()),
 
@@ -117,10 +120,11 @@ var dbj = {
 
     assert: function (x, group_) {
         if (!x) {
+			
             dbj.later(dbj, function () {
-                if (group_) this.console.group();
+                if (group_ || true) this.console.group();
                 console.err("dbj.assert failed for: " + x + ", msg: " + x.message);
-                if (group_) this.console.group_end();
+                if (group_ || true) this.console.group_end();
             });
             throw "dbj.assert failed for: " + x;
         }
@@ -144,7 +148,7 @@ var dbj = {
             return top[spn];
         }
     }()),
-    /*
+    /**
       numerical section follows
     */
     /**
