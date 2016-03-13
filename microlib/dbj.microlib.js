@@ -46,6 +46,18 @@ var dbj = {
             window.isObject = function (x) { return roleof(x) === "Function"; }
         }
     }()),
+	
+	err2str : function (eo) {
+
+    if (roleof(eo) != "Error") eo = new Error(0, "" + eo);
+
+    return "Error Code: {0} Facility Code: {1}, Error Message: {2}, Error Name: {3}".format(
+			e.number & 0xFFFF,
+			e.number >> 16 & 0x1FFF,
+			e.message,
+			e.name
+		);
+    },
 
 
     try_calling_nicely : function () {
