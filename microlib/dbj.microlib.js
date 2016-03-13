@@ -59,18 +59,6 @@ var dbj = {
 		);
     },
 
-
-    try_calling_nicely : function () {
-        try {
-            var args_ = (arguments.length === 1 ? [arguments[0]] : Array.apply(null, arguments));
-            var context = args_[0], 
-            FP = args_[1] ;
-            return FP.apply(context, args_.slice(2) );
-        } catch (x) {
-            return x.message ;
-        };
-    },
-
     createXHR: function () {
 
         var XMLHttpFactories = [
