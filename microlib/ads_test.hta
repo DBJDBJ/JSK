@@ -1,7 +1,7 @@
 <!-- DOCTYPE html -->
 <html>
 <head>
-    <title></title>
+    <title>show_schema_of_local_admin</title>
 	<meta charset="utf-8" />
 	<HTA:APPLICATION
           APPLICATIONNAME="dbj_hta_test"
@@ -22,15 +22,30 @@
         var global_prop_counter = 0
         var ad_sema = null;
         //-------------------------------------------------------------------------------------------
-        //
+        function print (s) {
+		   var ags =  [].slice.call( arguments );    
+		   var tid = setTimeout( function (){
+			   clearTimeout(tid);
+			   for ( var j = 0; j  < ags.length; )
+				 print.target(ags[j++]) ;
+			 },0);
+		return (void 0);
+		}
+		
+		print.target = function (s_) { print_buffer_ += ("\n" + s_) ; }
+		
         //-------------------------------------------------------------------------------------------
         function    print_buffer_flush() { console.innerText = print_buffer_; }
-        function    print(msg_) { print_buffer_ += "\n" + msg_; }
+//      function    print(msg_) { print_buffer_ += "\n" + msg_; }
         var         print_buffer_ = (new Date()).toLocaleString();
         //--------------------------------------
-        //--------------------------------------
-		onload = function () {
-				main();
+		function dbj_microlib_loaded () {
+		try {
+		print("dbj_microlib_loaded");
+				show_schema_of_local_admin();
+			} catch (x) {
+				alert( "Uncaught Exception: " + dbj.err2str(x) ) ;
+			}
 		}
         //--------------------------------------
         //
@@ -43,7 +58,7 @@
             };
         }
         //-------------------------------------------------------------------------------------------
-        function main() {
+        function show_schema_of_local_admin() {
             adOBJ = GetObject("WinNT://./admin,user");
             ad_sema = GetObject(adOBJ.Schema);
             //print("Props of adOBJ") ;
@@ -68,7 +83,7 @@
                 print(global_prop_counter + "\t" + strAttribute + " :: " + adOBJ[strAttribute]);
 
             } catch (x) {
-                print(x.message);
+                      print("EXCEPTION in enumProperties():\t" + dbj.err2str(x) );
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -81,7 +96,7 @@
                     "\nAD Path\t:\t" + ad_object.AdsPath
                     );
             } catch (x) {
-                print("EXCEPTION\n" + x.message);
+                   print("EXCEPTION in base_props():\t" + dbj.err2str(x) );
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -90,8 +105,7 @@
                 try {
                     FP(arg);
                 } catch (x) {
-                    var f_name = FP.toString().substring(0, FP.toString().indexOf("("));
-                    print("Call to " + f_name + "(" + arg + " : " + typeof (arg) + " )" + "\nResulted in EXCEPTION :\t" + x.message);
+                    print("EXCEPTION in try_call():\t" + dbj.err2str(x) );
                 }
             }
 
@@ -109,7 +123,7 @@
                     }
                 }
             } catch (x) {
-                print("EXCEPTION\n" + x.message);
+                                  print("EXCEPTION in foreach():\t" + dbj.err2str(x) );
                 try {
                     if ((collection != null) && (typeof (collection.constructor) != "undefined"))
                         print("\nCollection argument is\t:\t" + collection.constructor);
@@ -123,5 +137,22 @@
         //-------------------------------------------------------------------------------------------
 
     </script>
+<script src="D:\GitHub\HTA\pingpainter\js\jquery.min.js"></script>	
+<script id="dbj_microlib" type="text/javascript" >
+        //--------------------------------------
+		onload = function () {
+			$.getScript( "http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.min.js" )
+			  .done(function( script, textStatus ) {
+				print( textStatus );
+				dbj_microlib_loaded();
+			  })
+			  .fail(function( jqxhr, settings, exception ) {
+				print( "Triggered ajaxError handler. Exception: " + exception );
+			});
+			
+			print_buffer_flush();
+		}
+
+</script>		  
 </body>
 </html>
