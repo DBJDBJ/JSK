@@ -47,6 +47,18 @@ var dbj = {
         }
     }()),
 	
+	keep_inside : (function () {
+		
+			var boundaries = [0, 1]; // default
+			
+			return function (val, bounds ) {
+				if (bounds) boundaries = bounds.sort();
+					val = val - 0;
+						if (isNaN(val)) throw new Error(0xFF,"dbj.keep_inside() received NaN value.");
+				return val > boundaries[1] ? boundaries[1] : (val < boundaries[0] ? boundaries[0] : val);
+			}
+	    }()), 
+	
 	err2str : function (eo) {
 
     if (roleof(eo) != "Error") eo = new Error(0, "" + eo);
@@ -117,23 +129,22 @@ var dbj = {
         group_end   : function () { console.groupEnd(); }
     },
 
-    assert: function (x, group_) {
-        if (!x) {
+    assert: function (x) {
+        if (!(x)) {
 			
             dbj.later(dbj, function () {
-                if (group_ || true) this.console.group();
                 console.err("dbj.assert failed for: " + x + ", msg: " + x.message);
-                if (group_ || true) this.console.group_end();
             });
-            throw "dbj.assert failed for: " + x;
+            throw new Error(0xFF,"dbj.assert, " + x + ", rendered to false");
         }
     },
 
-    print: function (s_, group_) {
+    print: function () {
+		var ags = [].slice.call(arguments) ;
         dbj.later(dbj, function () {
-            if (group_) this.console.group();
-            console.log(s_);
-            if (group_) this.console.group_end();
+            this.console.group();
+				for ( var j = 0; j < ags.length; j++ ) console.log(ags[j]);
+            this.console.group_end();
         });
     },
 
