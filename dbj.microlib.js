@@ -133,9 +133,11 @@ var dbj = {
         if (!(x)) {
 			
             dbj.later(dbj, function () {
-                console.err("dbj.assert failed for: " + x + ", msg: " + x.message);
+                
+                var screamer = console ? console.error : alert ;
+                screamer("dbj.assert failed for: " + x + ", msg: " + x.message);
             });
-            throw new Error(0xFF,"dbj.assert, " + x + ", rendered to false");
+            throw new Error(0xFF,"dbj.assert(" + x + "), rendered to false");
         }
     },
 
