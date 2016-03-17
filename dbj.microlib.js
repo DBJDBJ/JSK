@@ -59,9 +59,9 @@ var dbj = {
 			}
 	    }()), 
 	
-	err2str : function (eo) {
+	err2str : function (e) {
 
-    if (roleof(eo) != "Error") eo = new Error(0, "" + eo);
+    if (roleof(e) != "Error") e = new Error(0, "" + e);
 
     return "Error Code: {0} Facility Code: {1}, Error Message: {2}, Error Name: {3}".format(
 			e.number & 0xFFFF,
