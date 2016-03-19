@@ -4,7 +4,7 @@
 <script id="dbj_microlib" type="text/javascript" >
         //--------------------------------------
 		var dbjmlsrc =[
-		"../dbj.microlib.js",
+		"../dbj.microlib.min.js",
 		"http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.js"
 		],
 		dbjmlsrcidx = 0 ;
@@ -61,7 +61,7 @@
         //-------------------------------------------------------------------------------------------
 //      function    printf(msg_) { print_buffer_ += "\n" + msg_; }
         //--------------------------------------
-		function dbj_microlib_loaded () {
+		dbj_microlib_loaded  =  function () {
 		try {
 				show_schema_of_local_admin();
 			} catch (x) {
@@ -90,7 +90,7 @@
             foreach(ad_sema.MandatoryProperties, enumProperties)
             printf("\nOptional attributes:");
             foreach(ad_sema.OptionalProperties, enumProperties)
-            print_buffer_flush();
+            printf().flush();
         }
         //-------------------------------------------------------------------------------------------
         var enumProperties = function (strAttribute, x) {
