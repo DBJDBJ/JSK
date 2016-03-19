@@ -67,7 +67,7 @@ details, details summary { margin-bottom: 0.25em; line-height: 1.25; }
 <!-- jQUERY core JavaScript ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="../dbj.microlib.min.js"></script>
+    <script src="../dbj.microlib.js"></script>
     <script src="../dbj.utl.js"></script>
 <script  type="text/javascript">
 //<![CDATA[
@@ -81,51 +81,96 @@ if ("undefined" == typeof dbj) {
 /**
  * Testing microwork 
 */
-function all_tests () {
+	function all_tests() {
 
-    var testing = (function () {
+		var Test = function () {
 
-        return {
-            /**
+			this.table = arguments[0];
+			this.context = this || arguments[1];
+
+			var THAT = this; // in case context is 'lost'
+			/**
+			*@param {object} expression if string will be evaluated otherwise just displayed
+			*/
+			this.unit = function (title, expression, comment, just_show) {
+
+				if (just_show) return THAT.sub(title, expression, comment);
+
+					var msg = [];
+
+					if (title)
+						msg.push("" + title);
+					else
+						msg.push(""+expression);
+
+				try {
+					if ("String" == roleof(expression))
+						msg.push("" + dbj.evil(expression));
+					else
+						msg.push(""+expression);
+					} catch (x) {
+						msg.push(dbj.err2str(x));
+					}
+					if (comment)
+						msg.push("" + comment);
+					else
+						msg.push("");
+
+					THAT.table.row(msg[0], msg[1], msg[2]);
+					return THAT.unit; // call streaming a'la DBJ
+			};
+			this.sub = function (s1,s2,s3) { // sub title
+				THAT.table.row(s1, s2, s3);
+				return THAT.unit; // call streaming a'la DBJ
+			}
+		};
+
+		var testing = {
+			/**
              * dbj.microlib Numerics testing 
              * @param {object} host element for result table to hang-off
              * @param {string} id of the host, can be used as it is but it is prefixed with "table_"
              * @param {string} optionsl caption for the result table. if not given default is used.
              */
-            numerics: function (tabla) {
+			numerics: function (tabla) {
 
-                tabla.row("dbj.round( Math.PI,2)", dbj.round(Math.PI, 2), "Why do we have this in the dbj*MICROLIB?"); // proceed with number of columns
-                tabla.row('dbj.num ("1.1")', dbj.num("1.1"), "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.");
-                tabla.row('dbj.num ("1")")', dbj.num("1"), " works everywhere is any JavaScript. It does it's best to transform any value into 'number'");
-                tabla.row('dbj.num (new Date())', dbj.num(new Date()), " transformed to number of ticks");
-                tabla.row('dbj.num (new String())', dbj.num(new String()), " the length of the empty string ");
-                tabla.row('dbj.num ("")', dbj.num(""), " ditto ... ");
-                tabla.row('dbj.num (new Array())', dbj.num(new Array()), " the length of the empty array is 0");
-                tabla.row('dbj.num ([])', dbj.num(new Array()), " the length of the empty array is 0");
-                tabla.row('dbj.num ([1,2,3])', dbj.num([1, 2, 3]), " Explain this then!");
-                tabla.row('dbj.num (function(){})', dbj.num(function () { }), " Not a surprise or ... ;) ");
-                tabla.row('dbj.num (new Object())', dbj.num(new Object()), " {} has no any number property, ditto it is a NaN ");
-                tabla.row('dbj.num ({ length:0})', dbj.num({ length: 0 }), " Eh ;) ");
-
-            },
-            /**
+				var test = new Test(tabla); 
+				test.unit("dbj.round(Math.PI, 2)", "dbj.round( Math.PI,2)", "Do we need this in the dbj*MICROLIB?")
+				('dbj.num ("1.1")', 'dbj.num("1.1")', "   one of those JS mind bending things for begginers. Usefull for assuring value is a number.")
+				('dbj.num ("1")")', 'dbj.num("1")', " works everywhere is any JavaScript. It does it's best to transform any value into 'number'")
+				('dbj.num (new Date())', 'dbj.num(new Date())', " transformed to number of ticks")
+				('dbj.num (new String())', 'dbj.num(new String())', " the length of the empty string ")
+				('dbj.num ("")', 'dbj.num("")', " ditto ... ")
+				('dbj.num (new Array())', 'dbj.num(new Array())', " the length of the empty array is 0")
+				('dbj.num ([])', 'dbj.num(new Array())', " the length of the empty array is 0")
+				('dbj.num ([1,2,3])', 'dbj.num([1, 2, 3])', " Explain this then!")
+				('dbj.num (function(){})', 'dbj.num(function () { })', " Not a surprise or ... ;) ")
+				('dbj.num (new Object())', 'dbj.num(new Object())', " {} has no any number property, ditto it is a NaN ")
+				('dbj.num ({ length:0})', 'dbj.num({ length: 0 })', " Eh ;) ")
+				("Other", "numerical", "stuff", true)
+				("dbj.sum([1,2,3,4,5,6,7,8,9])", 'dbj.sum([1, 2, 3, 4, 5, 6, 7, 8, 9])', "crazy implementation")
+				("dbj.avg([1,2,3,4,5,6,7,8,9])", 'dbj.avg([1, 2, 3, 4, 5, 6, 7, 8, 9])', "but working")
+				("dbj.a2s([1,2,3,4,5,6,7,8,9],'::')", "dbj.a2s([1, 2, 3, 4, 5, 6, 7, 8, 9], '::')", "pretty-er array print");
+			},
+			/**
              * dbj.microlib 'Other' parts testing 
              * @param {object} host element for result table to hang-off
              * @param {string} id of the host, can be used as it is but it is prefixed with "table_"
              * @param {string} optionsl caption for the result table. if not given default is used.
              */
-            other: function (tabla) {
-                tabla.row('dbj.err2str ( new Error(0xFF,)"Bang!")', dbj.err2str ( new Error(0xFF,"Bang!")), "pretty print the Error object");
-                tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
-                tabla.row('dbj.createXHR()', dbj.try_calling_nicely( this, dbj.createXHR ), "Browser agnostic XMLHttpRequest");
-                tabla.row('dbj.$("#container")', dbj.$("#container"), "querySelector");
-                tabla.row('dbj.$$("div")', dbj.$("#container"), "querySelectorAll");
-                tabla.row('dbj.later(this, function () { console.log("dbj.later works ok :)")}, 12 )',
+			other: function (tabla) {
+				var test = new Test(tabla);
+				test.unit("dbj.try_calling_nicely(function () { })", null, "Removed from dbj lib");
+
+				test.unit('dbj.err2str ( new Error(0xFF,"Bang!")', dbj.err2str(new Error(0xFF, "Bang!")), "pretty print the Error object");
+				test.unit('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
+				test.unit('dbj.$("#container")', dbj.$("#container"), "querySelector");
+				test.unit('dbj.$$("div")', dbj.$("#container"), "querySelectorAll");
+				test.unit('dbj.later(this, function () { console.log("dbj.later works ok :)")}, 12 )',
                     dbj.later(this, function () { dbj.print("dbj.later works ok :)", true); }, 12),
                     "execute it but latter. check console for result");
-            }
-        }
-    }());
+			}
+		};
 
     //using bootstrap every table should have class ".table" plus other class for styling
     var bootstrap_table_classing = "table table-striped";

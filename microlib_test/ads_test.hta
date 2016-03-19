@@ -1,21 +1,5 @@
 <!-- DOCTYPE html -->
 <html>
-<script lang="javascript" type="text/javascript" id="printer">
-        //-------------------------------------------------------------------------------------------
-        var         print_buffer_ = (new Date()).toLocaleString() + "\n" ;
-        function print (s) {
-		   var ags =  [].slice.call( arguments );    
-		   var tid = setTimeout( function (){
-			   clearTimeout(tid);
-			   for ( var j = 0; j  < ags.length; )
-				 print.target(ags[j++]) ;
-			 },0);
-				return print;
-		}
-        var print_buffer_flush = function () { console.innerText = print_buffer_; print_buffer_ = ""; }
-			print.flush = print_buffer_flush ;
-			print.target = function (s_) { print_buffer_ += ("\n" + s_) ; }
-</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script id="dbj_microlib" type="text/javascript" >
         //--------------------------------------
@@ -26,24 +10,25 @@
 		dbjmlsrcidx = 0 ;
 		
 		$(function (undefined) {
-		
-		    print("Loading", dbjmlsrc[dbjmlsrcidx] ).flush();
+
 		
 			$.getScript( dbjmlsrc[dbjmlsrcidx])
 			  .done(function( script, textStatus ) {
-				var msg = "\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
+			  	printf.element = ($("#cons")[0]); // initor
+			  	var msg = "\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
 					dbjmlsrc[dbjmlsrcidx],textStatus,typeof dbj
 				);
 			     // alert( msg );
-				print( msg ).flush();
+				printf( msg ).flush();
 				
 				if ( "undefined" != typeof(dbj) ) dbj_microlib_loaded();
 			  })
 			  .fail(function( jqxhr, settings, exception ) {
-				var msg = "ERROR on loading\n\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
+			  	printf.element = ($("#cons")[0]); // initor
+			  	var msg = "ERROR on loading\n\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
 					dbjmlsrc[dbjmlsrcidx], textStatus, typeof dbj
 				);
-				print( msg ).flush();
+				printf( msg ).flush();
 			});
 			
 			// print_buffer_flush();
@@ -64,7 +49,7 @@
           CONTEXTMENU="no"/>
 </head>
 <body>
-    <div id="console">
+    <div id="cons">
 
     </div>
     <script type="text/javascript">
@@ -74,7 +59,7 @@
         var ad_sema = null;
 
         //-------------------------------------------------------------------------------------------
-//      function    print(msg_) { print_buffer_ += "\n" + msg_; }
+//      function    printf(msg_) { print_buffer_ += "\n" + msg_; }
         //--------------------------------------
 		function dbj_microlib_loaded () {
 		try {
@@ -97,13 +82,13 @@
         var show_schema_of_local_admin = function () {
             adOBJ = GetObject("WinNT://./admin,user");
             ad_sema = GetObject(adOBJ.Schema);
-            //print("Props of adOBJ") ;
+            //printf("Props of adOBJ") ;
             //base_props( adOBJ ) ;
-            print("Attributes of " + adOBJ.AdsPath + " Schema");
+            printf("Attributes of " + adOBJ.AdsPath + " Schema");
             //base_props( ad_sema ) ;
-            print("Mandatory attributes:");
+            printf("Mandatory attributes:");
             foreach(ad_sema.MandatoryProperties, enumProperties)
-            print("\nOptional attributes:");
+            printf("\nOptional attributes:");
             foreach(ad_sema.OptionalProperties, enumProperties)
             print_buffer_flush();
         }
@@ -112,27 +97,27 @@
             global_prop_counter += 1
             try {
 //                var objAttribute = ad_sema.GetObject("Property", strAttribute)
-//                print(" (Syntax: " + objAttribute.Syntax + ")")
-//                print(objAttribute.MultiValued ? " Multivalued" : " Single-valued");
+//                printf(" (Syntax: " + objAttribute.Syntax + ")")
+//                printf(objAttribute.MultiValued ? " Multivalued" : " Single-valued");
 
                 adOBJ.GetInfoEx(strAttribute, 0);
-                print(global_prop_counter + "\t" + strAttribute + " :: " + adOBJ[strAttribute]);
+                printf(global_prop_counter + "\t" + strAttribute + " :: " + adOBJ[strAttribute]);
 
             } catch (x) {
-                      print("EXCEPTION in enumProperties():\t" + dbj.err2str(x) );
+                      printf("EXCEPTION in enumProperties():\t" + dbj.err2str(x) );
             }
         }
         //-------------------------------------------------------------------------------------------
         var base_props = function (ad_object, x) {
             try {
-                print(
+                printf(
                     "\nBase Properties : " +
                     "\nName\t:\t" + ad_object.Name +
                     "\nClass\t:\t" + ad_object.Class +
                     "\nAD Path\t:\t" + ad_object.AdsPath
                     );
             } catch (x) {
-                   print("EXCEPTION in base_props():\t" + dbj.err2str(x) );
+                   printf("EXCEPTION in base_props():\t" + dbj.err2str(x) );
             }
         }
         //-------------------------------------------------------------------------------------------
@@ -141,7 +126,7 @@
                 try {
                     FP(arg);
                 } catch (x) {
-                    print("EXCEPTION in try_call():\t" + dbj.err2str(x) );
+                    printf("EXCEPTION in try_call():\t" + dbj.err2str(x) );
                 }
             }
 
@@ -159,12 +144,12 @@
                     }
                 }
             } catch (x) {
-                                  print("EXCEPTION in foreach():\t" + dbj.err2str(x) );
+                                  printf("EXCEPTION in foreach():\t" + dbj.err2str(x) );
                 try {
                     if ((collection != null) && (typeof (collection.constructor) != "undefined"))
-                        print("\nCollection argument is\t:\t" + collection.constructor);
+                        printf("\nCollection argument is\t:\t" + collection.constructor);
                     else
-                        print("\nCollection argument is\t:\tNULL");
+                        printf("\nCollection argument is\t:\tNULL");
                 } catch (x) { }
             }
         }
