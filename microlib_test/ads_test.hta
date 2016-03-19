@@ -1,24 +1,57 @@
-<!DOCTYPE html>
+<!-- DOCTYPE html -->
 <html>
+<script lang="javascript" type="text/javascript" id="printer">
+        //-------------------------------------------------------------------------------------------
+        var         print_buffer_ = (new Date()).toLocaleString() + "\n" ;
+        function print (s) {
+		   var ags =  [].slice.call( arguments );    
+		   var tid = setTimeout( function (){
+			   clearTimeout(tid);
+			   for ( var j = 0; j  < ags.length; )
+				 print.target(ags[j++]) ;
+			 },0);
+				return print;
+		}
+        var print_buffer_flush = function () { console.innerText = print_buffer_; print_buffer_ = ""; }
+			print.flush = print_buffer_flush ;
+			print.target = function (s_) { print_buffer_ += ("\n" + s_) ; }
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script id="dbj_microlib" type="text/javascript" >
         //--------------------------------------
-		$(function () {
-			$.getScript( "http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.min.js" )
+		var dbjmlsrc =[
+		"../dbj.microlib.js",
+		"http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.js"
+		],
+		dbjmlsrcidx = 0 ;
+		
+		$(function (undefined) {
+		
+		    print("Loading", dbjmlsrc[dbjmlsrcidx] ).flush();
+		
+			$.getScript( dbjmlsrc[dbjmlsrcidx])
 			  .done(function( script, textStatus ) {
-				print( textStatus );
-				dbj_microlib_loaded();
+				var msg = "\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
+					dbjmlsrc[dbjmlsrcidx],textStatus,typeof dbj
+				);
+			     // alert( msg );
+				print( msg ).flush();
+				
+				if ( "undefined" != typeof(dbj) ) dbj_microlib_loaded();
 			  })
 			  .fail(function( jqxhr, settings, exception ) {
-				print( "Triggered ajaxError handler. Exception: " + exception );
+				var msg = "ERROR on loading\n\nLoaded:\t{0}\nStatus:\t{1}\ntypeof dbj == {2}".format(
+					dbjmlsrc[dbjmlsrcidx], textStatus, typeof dbj
+				);
+				print( msg ).flush();
 			});
 			
-			print_buffer_flush();
+			// print_buffer_flush();
 		});
 
 </script>		  
 <head>
-    <title>show_schema_of_local_admin</title>
+    <title>Testing dbj.micrlib.js is HTA (show AD schema of local admin)</title>
 	<meta charset="utf-8" />
 	<HTA:APPLICATION
           APPLICATIONNAME="dbj_hta_test"
@@ -35,30 +68,16 @@
 
     </div>
     <script type="text/javascript">
+	;(function () {
         //-------------------------------------------------------------------------------------------
         var global_prop_counter = 0
         var ad_sema = null;
+
         //-------------------------------------------------------------------------------------------
-        function print (s) {
-		   var ags =  [].slice.call( arguments );    
-		   var tid = setTimeout( function (){
-			   clearTimeout(tid);
-			   for ( var j = 0; j  < ags.length; )
-				 print.target(ags[j++]) ;
-			 },0);
-		return (void 0);
-		}
-		
-		print.target = function (s_) { print_buffer_ += ("\n" + s_) ; }
-		
-        //-------------------------------------------------------------------------------------------
-        function    print_buffer_flush() { console.innerText = print_buffer_; }
 //      function    print(msg_) { print_buffer_ += "\n" + msg_; }
-        var         print_buffer_ = (new Date()).toLocaleString();
         //--------------------------------------
 		function dbj_microlib_loaded () {
 		try {
-		print("dbj_microlib_loaded");
 				show_schema_of_local_admin();
 			} catch (x) {
 				alert( "Uncaught Exception: " + dbj.err2str(x) ) ;
@@ -66,7 +85,7 @@
 		}
         //--------------------------------------
         //
-        function basic_net_info() {
+        var basic_net_info = function () {
             var network = new ActiveXObject("Wscript.Network");
             return basic_net_info = {
                 'computer'  : network.ComputerName,
@@ -75,7 +94,7 @@
             };
         }
         //-------------------------------------------------------------------------------------------
-        function show_schema_of_local_admin() {
+        var show_schema_of_local_admin = function () {
             adOBJ = GetObject("WinNT://./admin,user");
             ad_sema = GetObject(adOBJ.Schema);
             //print("Props of adOBJ") ;
@@ -89,7 +108,7 @@
             print_buffer_flush();
         }
         //-------------------------------------------------------------------------------------------
-        function enumProperties(strAttribute, x) {
+        var enumProperties = function (strAttribute, x) {
             global_prop_counter += 1
             try {
 //                var objAttribute = ad_sema.GetObject("Property", strAttribute)
@@ -104,7 +123,7 @@
             }
         }
         //-------------------------------------------------------------------------------------------
-        function base_props(ad_object, x) {
+        var base_props = function (ad_object, x) {
             try {
                 print(
                     "\nBase Properties : " +
@@ -117,7 +136,7 @@
             }
         }
         //-------------------------------------------------------------------------------------------
-        function foreach(collection, FP, x) {
+        var foreach = function (collection, FP, x) {
             function try_call(FP, arg, x) {
                 try {
                     FP(arg);
@@ -152,7 +171,7 @@
         //-------------------------------------------------------------------------------------------
         // 
         //-------------------------------------------------------------------------------------------
-
+}());
     </script>
 </body>
 </html>
