@@ -1,7 +1,16 @@
-/*
+
+/**
     DBJ*MICROLIB GPL (c) 2011 - 2016 by DBJ.ORG
-    
 */
+;(function ( GLOBAL, undefined ) {
+
+if ("object" == typeof dbj) {
+	var msg = "dbj core object must be defined only once and only in here";
+	if (console && console.error) console.error(msg);
+	if ("function" == typeof alert) alert(msg);
+	return;
+};
+     
 if ("function" !== typeof String.format) {
 /**
 * .net string.format like function
@@ -25,25 +34,26 @@ String.prototype.format = function () {
             );
     }
 };
-    /*
-    */
+
+var TOS_ = Object.prototype.toString, HOP_ = Object.prototype.hasOwnProperty; /*
+ dbj core object must be defined only once and in here
+ */
 var dbj = {
 
     "GLOBAL" : (function () {
-        var TOS_ = Object.prototype.toString,
-        HOP_ = Object.prototype.hasOwnProperty;
+
         // global helpers
-        if ("function" !== typeof window.roleof) {
-            window.roleof = function (o) { return TOS_.call(o).match(/\w+/g)[1]; }
+        if ("function" !== typeof GLOBAL.roleof) {
+            GLOBAL.roleof = function (o) { return TOS_.call(o).match(/\w+/g)[1]; }
         }
-        if ("function" !== typeof window.isArray) {
-            window.isArray = function (x) { return roleof(x) === "Array"; }
+        if ("function" !== typeof GLOBAL.isArray) {
+            GLOBAL.isArray = function (x) { return roleof(x) === "Array"; }
         }
-        if ("function" !== typeof window.isObject) {
-            window.isObject = function (x) { return roleof(x) === "Object"; }
+        if ("function" !== typeof GLOBAL.isObject) {
+            GLOBAL.isObject = function (x) { return roleof(x) === "Object"; }
         }
-        if ("function" !== typeof window.isFunction) {
-            window.isObject = function (x) { return roleof(x) === "Function"; }
+        if ("function" !== typeof GLOBAL.isFunction) {
+            GLOBAL.isObject = function (x) { return roleof(x) === "Function"; }
         }
     }()),
 	
@@ -61,7 +71,7 @@ var dbj = {
 	
 	err2str : function (e) {
 
-    if (roleof(e) != "Error") e = new Error(0, "" + e);
+    if (roleof(e) != "Error") return ""+e;
 
     return "Error Code: {0} Facility Code: {1}, Error Message: {2}, Error Name: {3}".format(
 			e.number & 0xFFFF,
@@ -90,8 +100,7 @@ var dbj = {
                     /**/
                 }
             }
-            alert("dbj.createXMLHTTPObject() failed ?");
-            return false;
+            throw ("dbj.createXMLHTTPObject() failed ?");
         }
 
         return dbj.createXHR();
@@ -103,7 +112,7 @@ var dbj = {
         return (el || document).querySelectorAll(selector);
     },
         /**
-         * execute function a bit later, default timeout is 1 micro sec,execution context is global name space
+         * execute function a bit later, default timeout is 1 mili sec,execution context is global name space
          * arguments after 'timeout', are passed to the callback
          */
     later: function (context, func, timeout) {
@@ -202,8 +211,6 @@ var dbj = {
 
 }; /* eof dbj {} */
 
-/* the stuff only old magician can produce :) */
-    (function () {
         var Guid = {
             empty: "00000000-0000-0000-0000-000000000000",
             make: function () {
@@ -222,10 +229,10 @@ var dbj = {
         };
 
         dbj.GUID = function () { return Guid.make(); }
-    })()
 
+/* the stuff only old magician can produce :) */
 /** 
- * this works only in IE < 11, in WSH's and in HTA's of course
+ * following  works only in IE < 11, in WSH's and in HTA's of course
  * thus when in html be sure not to use 
  * <meta http-equiv="X-UA-Compatible" content="IE=edge">
  * if you want bellow to work
@@ -245,4 +252,4 @@ dbj.GUID = function ()
 }
 @end @*/
 
-
+}( this, (void 0)));

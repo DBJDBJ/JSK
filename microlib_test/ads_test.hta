@@ -1,5 +1,22 @@
-<!-- DOCTYPE html -->
+<!DOCTYPE html>
 <html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script id="dbj_microlib" type="text/javascript" >
+        //--------------------------------------
+		$(function () {
+			$.getScript( "http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.min.js" )
+			  .done(function( script, textStatus ) {
+				print( textStatus );
+				dbj_microlib_loaded();
+			  })
+			  .fail(function( jqxhr, settings, exception ) {
+				print( "Triggered ajaxError handler. Exception: " + exception );
+			});
+			
+			print_buffer_flush();
+		});
+
+</script>		  
 <head>
     <title>show_schema_of_local_admin</title>
 	<meta charset="utf-8" />
@@ -137,22 +154,5 @@
         //-------------------------------------------------------------------------------------------
 
     </script>
-<script src="D:\GitHub\HTA\pingpainter\js\jquery.min.js"></script>	
-<script id="dbj_microlib" type="text/javascript" >
-        //--------------------------------------
-		onload = function () {
-			$.getScript( "http://raw.githubusercontent.com/DBJDBJ/JSK/master/dbj.microlib.min.js" )
-			  .done(function( script, textStatus ) {
-				print( textStatus );
-				dbj_microlib_loaded();
-			  })
-			  .fail(function( jqxhr, settings, exception ) {
-				print( "Triggered ajaxError handler. Exception: " + exception );
-			});
-			
-			print_buffer_flush();
-		}
-
-</script>		  
 </body>
 </html>

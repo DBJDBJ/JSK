@@ -67,15 +67,22 @@ details, details summary { margin-bottom: 0.25em; line-height: 1.25; }
 <!-- jQUERY core JavaScript ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="jquery-1.9.1.min"><\/script>')</script>
     <script src="../dbj.microlib.min.js"></script>
-    <script src="dbj.utl.js"></script>
-<!--	
--->	
+    <script src="../dbj.utl.js"></script>
+<script  type="text/javascript">
+//<![CDATA[
+if ("undefined" == typeof dbj) {
+	alert("Whoa pardner! Where is your dbj?!");
+	debugger;
+}
+//]]>
+</script>	
 <script type="text/javascript" id="page_main_script">
 /**
  * Testing microwork 
 */
+function all_tests () {
+
     var testing = (function () {
 
         return {
@@ -108,6 +115,7 @@ details, details summary { margin-bottom: 0.25em; line-height: 1.25; }
              * @param {string} optionsl caption for the result table. if not given default is used.
              */
             other: function (tabla) {
+                tabla.row('dbj.err2str ( new Error(0xFF,)"Bang!")', dbj.err2str ( new Error(0xFF,"Bang!")), "pretty print the Error object");
                 tabla.row('dbj.evil ("1 + 2 ")', dbj.evil("1 + 2"), "eval in presence of 'use strict'");
                 tabla.row('dbj.createXHR()', dbj.try_calling_nicely( this, dbj.createXHR ), "Browser agnostic XMLHttpRequest");
                 tabla.row('dbj.$("#container")', dbj.$("#container"), "querySelector");
@@ -138,7 +146,7 @@ details, details summary { margin-bottom: 0.25em; line-height: 1.25; }
     };
 
 /**
-* details closed attribute not used ... EDGE does not understand details yet 
+* details closed attribute not used ... EDGE does not understand HTML5 details yet 
 */
 function make_detail(classes, summary_text) {
     return jQuery(
@@ -146,8 +154,8 @@ function make_detail(classes, summary_text) {
         .format(dbj.GUID(), (classes || ""), (summary_text || "") )
     )[0];
 }
-function all_tests() {
 
+/*********************************************************************************/
     var $tests_container = $("#all_tests_container");
 
     function add_test_then_execute(test_cb, detail_caption, table_caption) {
