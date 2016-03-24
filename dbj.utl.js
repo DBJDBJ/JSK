@@ -134,6 +134,7 @@ as it will provoke inclusion of firebug-lite
 			return "<tr><{0}>{1}</{0}></tr>".format(td, row_);
 		};
 		return {
+			ccn: function () { return colcount; },
 			hdr: function () {
 				if (selfcheck()) {
 					if (roleof(arguments[0]) == "Array")

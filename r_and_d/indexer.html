@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="dbj MICROLIB INDEXER utility">
+<meta name="author" content="Dusan B. Jovanovic">
+<title>dbj();&trade; dbj MICROLIB &amp; Utils</title>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<style>
+
+ #header {
+        background: url('http://dbj.systems/wp-content/uploads/2016/02/dbj-scratched-aluminium-green-2048x2048.jpg');
+    }
+	
+	h1 { text-align:center; }
+	
+	th { background-color: #515151; color: white; font-size:large; }
+</style>
+</head>
+<body>
+    <div class="jumbotron" id="header">
+    </div>
+<div id="container" class="container">
+    <div class="jumbotron">
+        <h1>DBJ*JSC UTL&trade;</h1>
+        <h3>dbj.org JavaScript Core Utilities (DBJ*JSC)</h3>
+        <p>
+            Testing page of the dbj*UTL Indexer 
+        </p>
+    </div>
+    <div class="page-header" >
+        <h1>Use case: index the array of two letter words. Also find the most frequent one.</h1>
+    <button onclick="main(); return false;" id="test_button" class="btn btn-primary">Start</button>
+        <div id="all_container">
+        </div>
+      </div>
+</div>
+</body>
+<!-- jQUERY core JavaScript ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="../dbj.microlib.js"></script>
+    <script src="../dbj.utl.js"></script>
+<script  type="text/javascript">
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+function main () {
+try {
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+ /**
+  * helper for dbj table making
+  */
+ function make_dbj_table(_host_element, _uid, column_names_array, caption) {
+    //using bootstrap every table should have class ".table" plus other class for styling
+    var bootstrap_table_classing = "table table-striped";
+    // &#9733; (black star) or the &#9734; (white star with black borders).
+    var default_caption = "<h1>&#9733;&#9733;&#9733;</h1>";
+    var tabla = dbj.utl.table(_host_element, "table_" + _uid, bootstrap_table_classing);
+        tabla.hdr(column_names_array)  // creates the table 
+            .caption("{0}".format(caption || default_caption));
+    return tabla;
+ };
+///////////////////////////////////////////////////////////////////////////////////////////////////	
+/**
+  Dump the whole array to the existing table
+*/
+function a2t ( tab_, argarr, show_idx ) {
+     var arr_  = argarr, cells, colnum = tab_.ccn() ;
+     for ( var k = 0; k < arr_.length; k += colnum ) {
+	    cells = arr_.slice(k, k + colnum);
+		
+		if ( show_idx )
+		   cells = cells.map(function (v,i,a) {
+		       return (k+i) + ":" + v ;
+		   });
+		
+		    tab_.row.apply(tab_, cells );
+	 }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////	
+/**
+  index object to array of strings
+  caller will join the array in accordance with requirements
+*/
+function idx2sta (idx_ ) {
+var s = ["{"] ; for ( var k in idx_ ) { s.push( "  " + k + ": [" + idx_[k] + "]"); } ; s.push("}"); return s;
+}
+
+var 
+rndm 		= function (min,max) {	return Math.floor(Math.random()*(max-min+1)+min);  } ,
+rndchar 	= function () { return  String.fromCharCode(rndm(65, 89 )); },
+generator 	= function ( len,min,max ){  var ar = []; while (len--) ar.push(rndm(min, max)); return ar; },
+rndword 	= function( len ) {  var ar = ""; while (len--) ar = ar.concat(rndchar()); return ar; },
+rndtxt  	= function ( len ) {  var ar = [] ; while (len--) ar.push(rndword(2)); return ar; }
+ ;
+var columns_hdrs = [1,2,3,4,5,6,7,8,9,10,11,12] ;
+var ga  = rndtxt(0xFF); // input generation Length
+var table1 = make_dbj_table( document.body.all_container, dbj.GUID(), columns_hdrs, "<h1>The Input</h1>");
+        a2t( table1, ga, true );
+
+/**
+  Copyright (c) 2016 by DBJ.ORG
+  index from :      ["apple","banana","apple","orange","banana","apple"];
+  produces this:    {"apple":[0,2,5] , "banana":[1,4] , "orange":[3], "_" : ["apple",3] }
+  where "_" is the most prevailing value calculated from the input array
+*/
+function index ( ca ) {
+var idx = { "_" : ["_" , 0 ] };
+	for(var i=0;i< ca.length;i++)
+	{
+	  var key = ca[i];
+	  if (idx[key] == undefined ) {
+			idx[key] = [i] ;
+	   } else {
+			idx[key].push(i);
+	   }
+	   // now update the prevailing value
+	   if (idx[key].length > idx["_"][1]  )
+	   idx["_"] = [ key , idx[key].length ];
+	};
+	return idx;
+}
+
+/**
+document.writeln(ga);
+document.writeln("<hr/>");
+document.writeln(s.join("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+*/
+var idx = index(ga);
+var table = make_dbj_table( document.body.all_container, dbj.GUID(), columns_hdrs , "<h2>The rezult. First property of an rezulting object (prop.name: '_')is the most frequent word, with number of occurences. The rest is words with values as arrays of indexes from the input.</h2>");
+
+	idx = idx2sta(idx) ; // toString() effectively
+
+		a2t( table,  idx );
+/////////////////////////////////////////////////////////////////////////////////////
+} catch (x_) {
+    alert("XCEPTION\n\n" + dbj.err2str(x_));
+}
+}; // eof main 
+</script>
+</html>

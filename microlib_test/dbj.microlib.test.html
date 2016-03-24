@@ -67,7 +67,7 @@ details, details summary { margin-bottom: 0.25em; line-height: 1.25; }
 <!-- jQUERY core JavaScript ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="../dbj.microlib.min.js"></script>
+    <script src="../dbj.microlib.js"></script>
     <script src="../dbj.utl.js"></script>
 <script  type="text/javascript">
 //<![CDATA[
@@ -172,17 +172,19 @@ if ("undefined" == typeof dbj) {
 			}
 		};
 
-    //using bootstrap every table should have class ".table" plus other class for styling
-    var bootstrap_table_classing = "table table-striped";
-    // &#9733; (black star) or the &#9734; (white star with black borders).
-    var default_caption = "<h1>&#9733;&#9733;&#9733;</h1>";
+    
     var default_details_class = "details4";
 
     /**
      * helper for dbj table making
      */
     function make_dbj_table(test_host_element, test_uid, column_names_array, caption) {
-        var tabla = dbj.utl.table(test_host_element, "table_" + test_uid, bootstrap_table_classing);
+    //using bootstrap every table should have class ".table" plus other class for styling
+    var bootstrap_table_classing = "table table-striped";
+    // &#9733; (black star) or the &#9734; (white star with black borders).
+    var default_caption = "<h1>&#9733;&#9733;&#9733;</h1>";
+
+    var tabla = dbj.utl.table(test_host_element, "table_" + test_uid, bootstrap_table_classing);
 
         tabla.hdr(column_names_array)  // creates the table 
             .caption("{0}".format(caption || default_caption));
