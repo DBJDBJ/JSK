@@ -2,7 +2,7 @@
 #DBJ's JavaScript Core (DBJ.JSC)
 ##JavaScript idioms, routines and constructs that are core.
 ---
-####Copyright(c) 2001-2016 by DBJ.ORG
+####Copyright  &copy; 2001-2016 by DBJ.ORG
 ####Dual licensed under the MIT and GPL licenses.
 ####Please mail to: dbjdbj@gmail.com, for the use of this code to be granted 
 
@@ -21,5 +21,5 @@ Slightly more specific utilities
 Tiny and fast dom querying which is cached too. 
 
 #####------------------------------------------------------------------------------------
-##### Copyright&copy; 2001-2016 by DBJ.ORG
+##### Copyright  &copy; 2001-2016 by DBJ.ORG
 #####------------------------------------------------------------------------------------
