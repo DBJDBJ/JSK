@@ -114,18 +114,19 @@ as it will provoke inclusion of firebug-lite
 
 		function selfcheck() {
 			if (!$table[0]) {
-				console.error("dbj.utl.table() : This is wrong. No table to handle?");
+				dbj.print("dbj.utl.table() : This is wrong. No table to handle?");
 				return false;
 			}
 			return true;
 		}
 
-		/* 
-		first row added defines number of columns 
-		latter can make row with different number; the table will be jaddged
+		/** 
+			first row added defines number of columns 
+			latter can make row with different number; the table will be jaddged
+			@param {array} row_
+			@param {bool}  header if true the header (TH) cells will be made
 		*/
 		function to_row(row_, header) {
-
 			dbj.assert(roleof(row_) === "Array");
 			if (!colcount) colcount = row_.length;
 			var td = header ? "TH" : "TD", wid = Math.round(100 / colcount);
@@ -135,6 +136,13 @@ as it will provoke inclusion of firebug-lite
 		};
 		return {
 			ccn: function () { return colcount; },
+			/**
+			 Add new header to this table.
+			 Call with arguments or a single array
+			 No check regarding the column count is made
+			 Appends to thead element
+			 Can be called repeatedly to add more than one TH row .
+			*/
 			hdr: function () {
 				if (selfcheck()) {
 					if (roleof(arguments[0]) == "Array")
@@ -144,9 +152,18 @@ as it will provoke inclusion of firebug-lite
 				}
 				return this;
 			},
+			/**
+			 Add new row to this table.
+			 Call with arguments or a single array
+			 No check regarding the column count is made
+			*/
 			row: function () {
-				if (selfcheck())
-					$table.find("tbody").append(to_row(slice.call(arguments)));
+				if (selfcheck()) {
+					if (roleof(arguments[0]) == "Array")
+						$table.find("tbody").append(to_row(arguments[0]));
+					else
+						$table.find("tbody").append(to_row(slice.call(arguments)));
+				}
 				return this;
 			},
 			caption: function (caption) {
@@ -161,9 +178,82 @@ as it will provoke inclusion of firebug-lite
 				);
 				return this;
 			},
-			uid: function (cb) { dbj.assert(roleof(cb) === "Function"); cb(id); return this; }
+			uid: function (cb) { dbj.assert(roleof(cb) === "Function"); cb(id); return this; },
+			/**
+				Dump the whole array to this table
+			*/
+			a2t : function ( argarr, show_idx ) {
+				 var arr_  = argarr, cells, colnum = this.ccn() ;
+				 for ( var k = 0; k < arr_.length; k += colnum ) {
+					cells = arr_.slice(k, k + colnum);
+					
+					if ( show_idx )
+					   cells = cells.map(function (v,i,a) {
+						   return (k+i) + ":" + v ;
+					   });
+					
+						$table.find("tbody").append(to_row(cells));
+				 }
+			}
 		}
-	}
+	};
+	
+   /**
+	* helper for dbj table making
+	*/
+	dbj.utl.make_table = function (_host_element, _uid, column_names_array, caption, table_style ) 
+	{
+		//using bootstrap every table should have class ".table" plus other class for styling
+		var bootstrap_table_classing = "table table-striped";
+		// &#9733; (black star) or the &#9734; (white star with black borders).
+		var default_caption = "<h1>&#9733;&#9733;&#9733;</h1>";
+    var tabla = dbj.utl.table(_host_element, "table_" + _uid, table_style || bootstrap_table_classing);
+        tabla.hdr(column_names_array)  // creates the table 
+            .caption("{0}".format(caption || default_caption));
+    return tabla;
+	};
+	/**
+	  Copyright (c) 2016 by DBJ.ORG
+	  index from :      ["apple","banana","apple","orange","banana","apple"];
+	  produces this:    {"apple":[0,2,5] , "banana":[1,4] , "orange":[3], "_" : ["apple",3] }
+	  where "_" is the most prevailing value calculated from the input array
+	*/
+	dbj.utl.index = function ( ca ) {
+    var hasOwnProperty = Object.prototype.hasOwnProperty ; 
+	var idx = { "_" : ["_" , 0 ] ,
+	/**
+	  index object to array of strings, not a single string
+	  caller can join the array in accordance with her requirements
+	*/
+	toString : function () {
+		var s = ["{"];
+			for ( var k in this ) {
+				if (hasOwnProperty.call(this, k))
+					if ( roleof(this[k]) != "Function" )
+						s.push( "  " + k + ": [" + this[k] + "]"); 
+			} ; 
+			s.push("}"); return s;
+		} ,
+	/**  inform that our primitive value is an array, not an object */
+	valueOf : function () {
+			 return this.toString();
+		}
+	};
+
+	for(var i=0;i< ca.length;i++)
+	{
+	  var key = ca[i];
+	  if (idx[key] == undefined ) {
+			idx[key] = [i] ;
+	   } else {
+			idx[key].push(i);
+	   }
+	   // now update the prevailing value
+	   if (idx[key].length > idx["_"][1]  )
+	   idx["_"] = [ key , idx[key].length ];
+	};
+		return idx;
+    }
 /*-----------------------------------------------------------------------------------------------*/
 }(this || window));
 /*-----------------------------------------------------------------------------------------------*/
