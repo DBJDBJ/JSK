@@ -12,13 +12,14 @@
 ##The API's suported
 
 ###dbj*MicroLib
-
 Very small set of very crucial dbj's javascript. 
 
-###dbj*Q
+###dbj*MicroUTL
+Slightly more specific utilities
 
+###dbj*Q
 Tiny and fast dom querying which is cached too. 
 
 #####------------------------------------------------------------------------------------
-#####Copyright(c) 2001-2016 by DBJ.ORG
+##### Copyright&copy; 2001-2016 by DBJ.ORG
 #####------------------------------------------------------------------------------------
